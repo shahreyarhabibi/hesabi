@@ -1,26 +1,42 @@
 @import "tailwindcss";
 
+/* ===== Brand Theme ===== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light mode */
+  --background: 210 40% 98%;
+  --foreground: 220 30% 15%;
+  --text: 220 15% 40%;
+
+  /* Brand */
+  --primary: 220 85% 57%;
+  --accent: 220 70% 45%;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* Dark mode */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 220 30% 8%;
+    --foreground: 210 40% 98%;
+    --text: 210 20% 70%;
+
+    --primary: 220 85% 57%;
+    --accent: 220 70% 45%;
   }
 }
 
+/* ===== Tailwind theme mapping ===== */
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-text: hsl(var(--text));
+  --color-primary: hsl(var(--primary));
+  --color-accent: hsl(var(--accent));
+
+  --font-sans: var(--font-poppins);
+}
+
+/* ===== Base styles ===== */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
