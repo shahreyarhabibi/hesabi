@@ -1,8 +1,13 @@
+import { BsPiggyBank } from "react-icons/bs";
 // app/dashboard/page.jsx
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/auth/LogoutButton";
+import SideBar from "@/components/sidebar/SideBar";
+import Link from "next/link";
+import Image from "next/image";
+import googleImg from "@/public/google.svg";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -11,148 +16,148 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  const transactions = [
+    {
+      id: 1,
+      sender: "Ahmad",
+      amount: 1000,
+      category: "Salary",
+      date: "19 Aug 2025",
+    },
+    {
+      id: 2,
+      sender: "Mohammad",
+      amount: 500,
+      category: "Groceries",
+      date: "20 Sep 2024",
+    },
+    {
+      id: 3,
+      sender: "ali",
+      amount: -240,
+      category: "Groceries",
+      date: "21 Sep 2024",
+    },
+  ];
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header with logout button */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Welcome back, {session.user?.name || session.user?.email}!
-            </h1>
-            <p className="text-gray-600 mt-2">
-              Here's an overview of your financial dashboard
-            </p>
-          </div>
-          <LogoutButton />
-        </div>
+    <>
+      <div className="flex">
+        <SideBar />
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold mb-2 text-gray-700">
-              Total Balance
-            </h3>
-            <p className="text-2xl font-bold text-green-600">$5,432.10</p>
-            <p className="text-sm text-gray-500 mt-1">+12.5% from last month</p>
+        <div className="flex flex-col w-full items-center p-15">
+          <div className="flex w-full items-center mb-6">
+            <h1 className="text-foreground text-4xl font-bold">Overview</h1>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold mb-2 text-gray-700">
-              This Month
-            </h3>
-            <p className="text-2xl font-bold text-blue-600">+$1,234.56</p>
-            <p className="text-sm text-gray-500 mt-1">Income: $3,210.00</p>
-          </div>
+          <div className="flex flex-col md:flex-row w-full gap-5 mt-10">
+            <div className="flex flex-1 flex-col bg-foreground h-35 p-5 gap-3 justify-center rounded-2xl">
+              <p className="text-md text-background/80">Current Balance</p>
+              <p className="text-background text-3xl font-semibold">$4000.0</p>
+            </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h3 className="text-lg font-semibold mb-2 text-gray-700">
-              Goals Progress
-            </h3>
-            <p className="text-2xl font-bold text-purple-600">68%</p>
-            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-              <div
-                className="bg-purple-600 h-2 rounded-full"
-                style={{ width: "68%" }}
-              ></div>
+            <div className="flex flex-1 flex-col bg-linear-45 from-background to-primary/20 border border-text/10 h-35 p-5 gap-3 justify-center rounded-2xl">
+              <p className="text-md text-foreground/80">Income</p>
+              <p className="text-foreground text-3xl font-semibold">$231.0</p>
+            </div>
+
+            <div className="flex flex-1 flex-col bg-linear-45 from-background to-primary/20 border border-text/10 h-35 p-5 gap-3 justify-center rounded-2xl">
+              <p className="text-md text-foreground/80">Expenses</p>
+              <p className="text-foreground text-3xl font-semibold">$1400</p>
             </div>
           </div>
-        </div>
 
-        {/* Recent Transactions */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
-            Recent Transactions
-          </h2>
-          <div className="space-y-4">
-            {[
-              {
-                name: "Groceries",
-                date: "Today",
-                amount: "-$45.20",
-                type: "expense",
-              },
-              {
-                name: "Freelance Payment",
-                date: "Yesterday",
-                amount: "+$500.00",
-                type: "income",
-              },
-              {
-                name: "Netflix Subscription",
-                date: "Jan 15",
-                amount: "-$15.99",
-                type: "expense",
-              },
-              {
-                name: "Coffee Shop",
-                date: "Jan 14",
-                amount: "-$6.50",
-                type: "expense",
-              },
-              {
-                name: "Salary Deposit",
-                date: "Jan 12",
-                amount: "+$2,800.00",
-                type: "income",
-              },
-            ].map((transaction, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
-              >
-                <div className="flex items-center">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      transaction.type === "income"
-                        ? "bg-green-100"
-                        : "bg-red-100"
-                    }`}
-                  >
-                    {transaction.type === "income" ? (
-                      <span className="text-green-600 font-bold">↑</span>
-                    ) : (
-                      <span className="text-red-600 font-bold">↓</span>
-                    )}
+          <div className="flex flex-col w-full gap-5">
+            <div className="flex flex-col w-3xl text-foreground bg-linear-45 from-background to-primary/20 border border-text/10 mt-5 p-8 gap-5 rounded-2xl">
+              <div className="flex justify-between items-center">
+                <h3 className="text-2xl font-semibold">Pots</h3>
+                <Link className="text-foreground/80" href="/pots">
+                  See Details &gt;
+                </Link>
+              </div>
+              <div className="flex">
+                <div className="flex gap-15">
+                  <div className="flex w-xs gap-6 bg-black/20 items-center p-7 rounded-2xl">
+                    <BsPiggyBank className="text-5xl text-primary" />
+                    <div className="flex flex-col gap-2">
+                      <p>Total Saved</p>
+                      <h3 className="text-foreground text-2xl font-semibold">
+                        $930
+                      </h3>
+                    </div>
                   </div>
-                  <div className="ml-4">
-                    <p className="font-medium text-gray-800">
-                      {transaction.name}
-                    </p>
-                    <p className="text-sm text-gray-500">{transaction.date}</p>
+                  <div className="grid grid-cols-2 grid-rows-2 ">
+                    <div className="flex p-2 gap-3">
+                      <div className="h-12.75 w-1 rounded-full bg-cyan-900 "></div>
+                      <p className="text-foreground/80 font-medium flex flex-col gap-1">
+                        Savings
+                        <span className="font-bold text-foreground">130$</span>
+                      </p>
+                    </div>
+                    <div className="flex p-2 gap-3 ">
+                      <div className="h-12.75 w-1 rounded-full bg-primary"></div>
+                      <p className="text-foreground/80 font-medium flex flex-col gap-1 ">
+                        Concert Ticket
+                        <span className="font-bold text-foreground">130$</span>
+                      </p>
+                    </div>
+                    <div className="flex p-2 gap-3 ">
+                      <div className="h-12.75 w-1 rounded-full bg-orange-800"></div>
+                      <p className="text-foreground/80 font-medium flex flex-col gap-1">
+                        Laptop
+                        <span className="font-bold text-foreground">130$</span>
+                      </p>
+                    </div>
+                    <div className="flex p-2 gap-3 ">
+                      <div className="h-12.75 w-1 rounded-full bg-fuchsia-900"></div>
+                      <p className="text-foreground/80 font-medium flex flex-col gap-1">
+                        Mobile
+                        <span className="font-bold text-foreground">130$</span>
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <p
-                  className={`font-semibold ${
-                    transaction.type === "income"
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  {transaction.amount}
-                </p>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* User Info Card */}
-        <div className="mt-8 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg shadow-sm p-6 text-white">
-          <div className="flex justify-between items-center">
-            <div>
-              <h3 className="text-xl font-bold">Account Information</h3>
-              <p className="mt-2 opacity-90">Email: {session.user?.email}</p>
-              <p className="mt-1 opacity-90">Member since: January 2024</p>
             </div>
-            <div className="text-right">
-              <p className="text-sm opacity-90">Account Status</p>
-              <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 mt-2">
-                Active
+            <div className="flex flex-col w-3xl bg-linear-45 from-background to-primary/20 border border-text/10 p-8 gap-5 rounded-2xl">
+              <div className="flex justify-between items-center">
+                <h3 className="text-2xl font-semibold">Transactions</h3>
+                <Link className="text-foreground/80" href="/transactinons">
+                  See Details &gt;
+                </Link>
               </div>
+              {transactions.map((tx) => (
+                <div
+                  key={tx.id}
+                  className="flex justify-between pb-3 border-b border-text/30"
+                >
+                  <div className="flex gap-4 items-center">
+                    <Image
+                      className="rounded-full"
+                      src={googleImg}
+                      height={30}
+                      width={30}
+                      alt={`${tx.sender} photo`}
+                    />
+                    <p>{tx.sender}</p>
+                  </div>
+
+                  <div>
+                    <p
+                      className={`font-bold text-right ${
+                        tx.amount >= 0 ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {tx.amount >= 0 ? "+" : "-"}$
+                      {Math.abs(tx.amount).toFixed(2)}
+                    </p>
+                    <p className="text-text text-right">{tx.date}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
