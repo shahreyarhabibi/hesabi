@@ -30,6 +30,7 @@ export default function BudgetChart() {
             paddingAngle={5}
             dataKey="value"
             cornerRadius={10}
+            stroke="none"
           >
             {data.map((entry, index) => (
               <Cell
