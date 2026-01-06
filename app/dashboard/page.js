@@ -91,7 +91,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Main Content Area */}
-      <div className="h-full flex w-full gap-5">
+      <div className="h-full md:flex w-full gap-5">
         {/* Left Column */}
         <div className="flex w-full flex-col gap-5">
           <PotsSection potsData={potsData} totalSaved="$930" />
@@ -99,7 +99,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Right Column */}
-        <div className="flex flex-col w-3/4 mt-5 gap-5">
+        <div className="flex flex-col w-full md:w-3/4 mt-5 gap-5">
           <BudgetSection budgetCategories={potsData} />
           <RecurringBillsSection bills={recurringBills} />
         </div>

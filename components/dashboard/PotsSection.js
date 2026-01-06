@@ -8,11 +8,11 @@ export default function PotsSection({ potsData, totalSaved }) {
       <SectionHeader title="Pots" linkHref="/pots" />
 
       <div className="flex">
-        <div className="flex w-full flex-row justify-between">
+        <div className="flex w-full flex-col gap-5 md:flex-row justify-between">
           {/* Total Saved Card */}
-          <div className="flex w-xs gap-6 bg-accent/15  items-center p-7 rounded-2xl">
+          <div className="flex md:w-xs gap-3 bg-accent/10  items-center p-5  rounded-2xl">
             <BsPiggyBank className="text-5xl text-primary" />
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col">
               <p>Total Saved</p>
               <h3 className="text-foreground text-2xl font-semibold">
                 {totalSaved}
