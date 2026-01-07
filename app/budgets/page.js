@@ -11,7 +11,8 @@ export default function BudgetsPage() {
         pageHeader={"Budgets"}
         pageSubHeader={"Manage your budgets"}
       />
-      <div className="flex flex-row">
+      <div className="flex flex-row px-10">
+        {/* Budget Summary */}
         <div className="flex flex-col items-center w-2/5 text-foreground bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-6 rounded-2xl">
           <BudgetChart />
           <div className="flex flex-col mt-10 self-start w-full">
@@ -36,6 +37,8 @@ export default function BudgetsPage() {
             ))}
           </div>
         </div>
+
+        <div className=""></div>
       </div>
     </DashboardLayout>
   );
