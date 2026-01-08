@@ -386,3 +386,46 @@ export const categories = [
   "Education",
   "Other",
 ];
+
+export const potsData = [
+  {
+    id: 1,
+    name: "Laptop",
+    color: "bg-blue-500",
+    saved: 750,
+    target: 1200,
+    description: "Saving for a new laptop",
+    createdAt: "2024-01-15",
+    progressColor: "#3B82F6", // Blue
+  },
+  {
+    id: 2,
+    name: "Vacation",
+    color: "bg-emerald-500",
+    saved: 1200,
+    target: 3000,
+    description: "Hawaii vacation fund",
+    createdAt: "2024-02-10",
+    progressColor: "#10B981", // Emerald
+  },
+  {
+    id: 3,
+    name: "Emergency Fund",
+    color: "bg-amber-500",
+    saved: 3500,
+    target: 5000,
+    description: "Rainy day savings",
+    createdAt: "2024-01-01",
+    progressColor: "#F59E0B", // Amber
+  },
+  {
+    id: 4,
+    name: "New Car",
+    color: "bg-purple-500",
+    saved: 8000,
+    target: 25000,
+    description: "Down payment for a new car",
+    createdAt: "2024-03-05",
+    progressColor: "#8B5CF6", // Purple
+  },
+];
