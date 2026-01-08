@@ -1,16 +1,8 @@
-// app/dashboard/layout.jsx
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+"use client";
+
 import SideBar from "@/components/sidebar/Sidebar";
 
-export default async function DashboardLayout({ children }) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect("/login");
-  }
-
+export default function DashboardLayout({ children }) {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar - shows as sidebar on desktop, bottom nav on mobile */}

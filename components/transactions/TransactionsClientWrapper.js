@@ -135,7 +135,7 @@ export default function TransactionsClientWrapper({ initialTransactions }) {
         buttonText={"Add New Transaction"}
         pageHeader={"Transactions"}
         pageSubHeader={"View and manage all your financial transactions"}
-        onAddTransaction={handleAddTransaction}
+        onAdd={handleAddTransaction}
       />
 
       <div className="rounded-xl sm:rounded-2xl border border-text/10 bg-background dark:bg-linear-45 dark:from-background dark:to-primary/20 p-4 sm:p-6 shadow-lg">
