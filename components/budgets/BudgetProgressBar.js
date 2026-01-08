@@ -6,7 +6,7 @@ function BudgetProgressBar({ spend, max, color }) {
   return (
     <div
       data-testid="progress-bar-container"
-      className="h-10 w-full px-1 bg-background/70 rounded-md flex items-center"
+      className="h-10 w-full px-1 bg-foreground/10 dark:bg-background/70 rounded-md flex items-center"
     >
       <div
         data-testid="progress-bar"

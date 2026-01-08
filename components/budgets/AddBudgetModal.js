@@ -271,7 +271,7 @@ export default function AddBudgetModal({
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-3 rounded-lg bg-foreground hover:bg-primary/20 hover:text-foreground text-background font-semibold shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-3 rounded-lg bg-foreground hover:bg-foreground/90 dark:hover:bg-primary/20 dark:hover:text-foreground transition-all hover:cursor-pointer text-background font-semibold shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={availableThemeColors.length === 0 && !editingBudget}
               >
                 {editingBudget ? "Update Budget" : "Add Budget"}

@@ -35,7 +35,7 @@ export default function Header({
       {/* Desktop Add Button */}
       <button
         onClick={onAdd}
-        className="hidden sm:flex items-center gap-2 rounded-lg bg-foreground hover:bg-primary/90 dark:hover:bg-primary/20 dark:hover:text-foreground transition-all duration-200 px-5 py-3 font-semibold text-background shadow-lg hover:shadow-xl active:scale-95"
+        className="hidden sm:flex items-center gap-2 rounded-lg bg-foreground hover:bg-foreground/90 dark:hover:bg-primary/20 dark:hover:text-foreground transition-all hover:cursor-pointer duration-200 px-5 py-3 font-semibold text-background shadow-lg hover:shadow-xl active:scale-95"
       >
         <FiPlus className="text-xl" />
         {buttonText}
