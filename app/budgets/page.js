@@ -34,9 +34,9 @@ export default function BudgetsPage() {
         pageHeader={"Budgets"}
         pageSubHeader={"Manage your budgets"}
       />
-      <div className="flex flex-row px-30 gap-10">
+      <div className="flex w-full flex-col md:flex-row md:px-30 gap-10">
         {/* Budget Summary */}
-        <div className="flex flex-col h-180 items-center w-2/5 text-foreground bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-6 rounded-2xl">
+        <div className="flex flex-col h-180 items-center md:w-2/5 text-foreground bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-6 rounded-2xl">
           <BudgetChart />
           <div className="flex flex-col mt-10 self-start w-full">
             <h2 className="text-2xl font-bold">Spending Summary</h2>
@@ -45,15 +45,15 @@ export default function BudgetsPage() {
               return (
                 <div
                   key={budget.id}
-                  className="flex mt-5 justify-between pb-3 border-b border-text/20"
+                  className="flex mt-5 items-center justify-between pb-3 border-b border-text/20"
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-1 h-10 ${budget.color}`}></div>
                     <p>{budget.name}</p>
                   </div>
 
-                  <div className="flex gap-3">
-                    <p className="font-bold">${spend.toLocaleString()}</p>
+                  <div className="flex  gap-3">
+                    <p className="font-bold ">${spend.toLocaleString()}</p>
                     <span className="text-text">
                       of ${budget.max.toLocaleString()}
                     </span>
@@ -64,7 +64,7 @@ export default function BudgetsPage() {
           </div>
         </div>
 
-        <div className="flex  flex-col w-3/5 gap-10">
+        <div className="flex flex-col w-full md:w-3/5 gap-10">
           {/* Render each budget category section */}
           {Budgets.map((budget) => {
             const spend = calculateCategorySpend(budget.name);
@@ -90,7 +90,7 @@ export default function BudgetsPage() {
             return (
               <div
                 key={budget.id}
-                className="flex flex-col h-180 gap-5 bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-10 rounded-2xl"
+                className="flex flex-col md:h-180 gap-5 bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-5 md:p-10 rounded-2xl"
               >
                 <div className="flex items-center w-full justify-between ">
                   <div className="flex items-center gap-3">
@@ -101,10 +101,10 @@ export default function BudgetsPage() {
                   </div>
                   <BiDotsHorizontalRounded className="text-3xl" />
                 </div>
-                <p className="text-text">Maximum Of ${budget.max.toFixed(1)}</p>
+                <p className="text-text">Maximum Of ${budget.max.toFixed(2)}</p>
                 <div
                   data-testid="progress-bar-container"
-                  className="h-10 w-full bg-background/70 rounded-md flex items-center"
+                  className="h-10 w-full px-2 bg-background/70 rounded-md flex items-center"
                 >
                   <div
                     data-testid="progress-bar"
@@ -117,7 +117,7 @@ export default function BudgetsPage() {
                   />
                 </div>
                 <div className="flex justify-between mt-3">
-                  <div className="flex flex-1 items-center gap-5">
+                  <div className="flex md:flex-1 flex-1/5 items-center gap-5">
                     <div
                       className={`h-13 rounded-md ${budget.color} w-1`}
                     ></div>
@@ -135,9 +135,10 @@ export default function BudgetsPage() {
                   </div>
                 </div>
 
-                <div className="flex w-full flex-col h-auto mt-10 bg-background shadow-xl border border-text/10 p-6 gap-5 rounded-2xl">
+                <div className="flex w-full flex-col h-auto mt-5 md:mt-10 bg-background shadow-xl border border-text/10 p-6 gap-5 rounded-2xl">
                   <SectionHeader
                     title="Latest Spending"
+                    textSize={"text-md"}
                     linkHref={`/transactions?category=${encodeURIComponent(
                       budget.name
                     )}`}
