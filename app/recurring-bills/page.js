@@ -137,7 +137,7 @@ export default function RecurringBills() {
       <div className="flex w-full flex-col md:flex-row md:px-30 gap-10">
         {/* Left Side - Summary Cards */}
         <div className="flex flex-col gap-5 md:w-2/5">
-          <div className="flex flex-col gap-7 w-full text-foreground bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-6 rounded-2xl">
+          <div className="flex flex-row md:flex-col gap-7 w-full text-foreground bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-6  rounded-2xl">
             <RiBillLine className="text-5xl" />
             <p className="flex flex-col text-text">
               Total Bills
@@ -192,10 +192,12 @@ export default function RecurringBills() {
                 </button>
               )}
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-text">Sort by</span>
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-sm font-medium text-text whitespace-nowrap">
+                Sort by
+              </span>
               <select
-                className="rounded-xl border border-text/20 bg-background dark:bg-gray-900 px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent min-w-[140px] cursor-pointer transition-all duration-200"
+                className="rounded-xl border border-text/20 bg-background dark:bg-gray-900 px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent w-full md:min-w-35 cursor-pointer transition-all duration-200"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
               >
@@ -212,7 +214,9 @@ export default function RecurringBills() {
               {/* Table Header */}
               <div className="flex  w-full border-b border-text/20 pb-3">
                 <div className="flex-1 text-text font-medium">Bill Title</div>
-                <div className="flex-1 text-text font-medium">Due Date</div>
+                <div className="hidden md:flex-1 text-text font-medium">
+                  Due Date
+                </div>
                 <div className="col-span-2 text-text font-medium">Amount</div>
               </div>
 
@@ -234,12 +238,15 @@ export default function RecurringBills() {
                           <p className="font-semibold truncate max-w-[200px]">
                             {bill.name}
                           </p>
-                          <p className="text-sm text-text/70 truncate max-w-[200px]">
+                          <p className="md:block hidden text-sm text-text/70 truncate max-w-[200px]">
                             {bill.category} • {bill.description}
                           </p>
+                          <span className="md:gidden px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                            {formatDueDate(bill.date)}
+                          </span>
                         </div>
                       </div>
-                      <div className="flex-1">
+                      <div className="hidden md:flex-1">
                         <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
                           {formatDueDate(bill.date)}
                         </span>
@@ -259,7 +266,7 @@ export default function RecurringBills() {
                 <div className="flex justify-between items-center">
                   <p className="text-text">
                     Showing {filteredAndSortedBills.length} of{" "}
-                    {recurringBills.length} recurring bills
+                    {recurringBills.length}
                   </p>
                   <p className="font-bold text-lg">
                     Total: {formatAmount(totalAmount)}

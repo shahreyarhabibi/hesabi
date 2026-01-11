@@ -1,6 +1,6 @@
 export default function BillItem({ name, amount, color }) {
   return (
-    <div className="flex bg-accent/10 rounded-2xl items-center">
+    <div className="flex bg-accent/10 rounded-2xl  items-center">
       <div
         className={`h-18 w-1.5 ${color} rounded-tl-2xl rounded-bl-2xl`}
       ></div>
