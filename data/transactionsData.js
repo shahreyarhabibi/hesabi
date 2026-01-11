@@ -1,4 +1,5 @@
 // Mock data - In production, this would come from your database
+
 export const allTransactions = [
   {
     id: 1,
@@ -59,6 +60,7 @@ export const allTransactions = [
     amount: -15,
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Netflix",
     description: "Monthly subscription",
+    recurring: true,
   },
   {
     id: 7,
@@ -150,7 +152,6 @@ export const allTransactions = [
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Disney",
     description: "Streaming service",
   },
-  // ADD MORE TRANSACTIONS FOR EACH CATEGORY
   {
     id: 16,
     name: "Cinema",
@@ -210,6 +211,7 @@ export const allTransactions = [
     amount: -120,
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Electricity",
     description: "Monthly electricity",
+    recurring: true,
   },
   {
     id: 22,
@@ -220,6 +222,7 @@ export const allTransactions = [
     amount: -60,
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Water",
     description: "Water bill",
+    recurring: true,
   },
   {
     id: 23,
@@ -230,6 +233,7 @@ export const allTransactions = [
     amount: -80,
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Internet",
     description: "Internet subscription",
+    recurring: true,
   },
   {
     id: 24,
