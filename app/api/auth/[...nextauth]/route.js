@@ -1,84 +1,74 @@
+// app/api/auth/[...nextauth]/route.js
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getDb } from "@/lib/db";
-import { verifyPassword } from "@/lib/auth-utils";
+import bcrypt from "bcrypt";
 
 export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        try {
-          if (!credentials?.email || !credentials?.password) {
-            throw new Error("Email and password required");
-          }
-
-          const db = getDb();
-
-          // Find user by email
-          const user = db
-            .prepare(
-              "SELECT id, email, password, name FROM users WHERE email = ?"
-            )
-            .get(credentials.email);
-
-          if (!user) {
-            throw new Error("User not found");
-          }
-
-          // Verify password
-          const isValid = await verifyPassword(
-            credentials.password,
-            user.password
-          );
-
-          if (!isValid) {
-            throw new Error("Invalid password");
-          }
-
-          // Return user object (without password)
-          return {
-            id: user.id.toString(),
-            email: user.email,
-            name: user.name,
-          };
-        } catch (error) {
-          console.error("Auth error:", error.message);
-          return null;
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Please enter an email and password");
         }
+
+        const db = getDb();
+        const user = db
+          .prepare("SELECT * FROM users WHERE email = ?")
+          .get(credentials.email);
+
+        if (!user) {
+          throw new Error("No user found with this email");
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!isPasswordValid) {
+          throw new Error("Invalid password");
+        }
+
+        // Return user data (password excluded)
+        return {
+          id: user.id.toString(),
+          email: user.email,
+          name: user.name,
+          avatar: user.avatar,
+        };
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  pages: {
-    signIn: "/login",
-    error: "/login", // Redirect to login on error
-  },
   callbacks: {
+    // Add user ID to the session
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.email = user.email;
+        token.avatar = user.avatar;
       }
       return token;
     },
     async session({ session, token }) {
-      if (session?.user) {
+      if (token && session.user) {
         session.user.id = token.id;
-        session.user.email = token.email;
+        session.user.avatar = token.avatar;
       }
       return session;
     },
   },
+  pages: {
+    signIn: "/login",
+  },
+  session: {
+    strategy: "jwt",
+  },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);

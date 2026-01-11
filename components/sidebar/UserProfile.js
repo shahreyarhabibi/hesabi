@@ -1,11 +1,22 @@
-import cat from "@/public/avatars/cat.png";
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
+import { DEFAULT_AVATAR, isDefaultAvatar } from "@/lib/constants";
 
 export default function UserProfile({
   isCollapsed,
-  name = "John Doe",
-  email = "john@example.com",
+  name = "User",
+  email = "user@example.com",
+  avatar = DEFAULT_AVATAR,
+  initials = "U",
 }) {
+  const [imageError, setImageError] = useState(false);
+
+  // Always show avatar image (default or custom)
+  // Only show initials if image fails to load
+  const showAvatar = avatar && !imageError;
+
   return (
     <div className="p-6 border-b border-gray-700">
       <div
@@ -14,7 +25,23 @@ export default function UserProfile({
         }`}
       >
         <div className="relative">
-          <Image src={cat} alt="user-image" width={45} height={45} />
+          {showAvatar ? (
+            <Image
+              src={avatar}
+              alt={`${name}'s avatar`}
+              width={45}
+              height={45}
+              className="rounded-full ring-2 ring-primary/30"
+              onError={() => setImageError(true)}
+              unoptimized={avatar.startsWith("http")} // For external URLs
+            />
+          ) : (
+            // Fallback to initials only if image fails to load
+            <div className="w-[45px] h-[45px] bg-primary rounded-full flex items-center justify-center text-lg font-bold ring-2 ring-primary/30">
+              {initials}
+            </div>
+          )}
+          <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-800"></div>
         </div>
         {!isCollapsed && (
           <div className="flex-1 overflow-hidden">

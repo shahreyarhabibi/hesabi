@@ -8,6 +8,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const DEFAULT_AVATAR = "/avatars/user.png";
+
 function migrateDatabase() {
   const dbPath = path.join(__dirname, "../database.db");
   const db = new Database(dbPath);
@@ -51,6 +53,32 @@ function migrateDatabase() {
     } else {
       console.log("✓ updated_at column already exists");
     }
+
+    // Set default avatar for existing users who don't have one
+    console.log("\nSetting default avatar for existing users...");
+    const result = db
+      .prepare(
+        "UPDATE users SET avatar = ? WHERE avatar IS NULL OR avatar = ''"
+      )
+      .run(DEFAULT_AVATAR);
+
+    console.log(`✓ Updated ${result.changes} user(s) with default avatar`);
+
+    // Show summary
+    const totalUsers = db.prepare("SELECT COUNT(*) as count FROM users").get();
+    const usersWithDefault = db
+      .prepare("SELECT COUNT(*) as count FROM users WHERE avatar = ?")
+      .get(DEFAULT_AVATAR);
+    const usersWithCustom = db
+      .prepare(
+        "SELECT COUNT(*) as count FROM users WHERE avatar != ? AND avatar IS NOT NULL"
+      )
+      .get(DEFAULT_AVATAR);
+
+    console.log("\n📊 Avatar Summary:");
+    console.log(`   Total users: ${totalUsers.count}`);
+    console.log(`   Using default avatar: ${usersWithDefault.count}`);
+    console.log(`   Using custom avatar: ${usersWithCustom.count}`);
 
     console.log("\n✓ Database migration completed successfully!");
   } catch (error) {

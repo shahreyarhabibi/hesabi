@@ -9,7 +9,7 @@ import LogoutButton from "@/components/sidebar/LogoutButton";
 import MobileNav from "@/components/sidebar/MobileNav";
 import { mainNavItems, bottomNavItems } from "@/config/navConfig";
 
-export default function Sidebar() {
+export default function Sidebar({ userData }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeItem, setActiveItem] = useState("dashboard");
   const pathname = usePathname();
@@ -27,12 +27,13 @@ export default function Sidebar() {
         {/* Header */}
         <SidebarHeader isCollapsed={isCollapsed} onToggle={handleToggle} />
 
-        {/* User Profile */}
+        {/* User Profile - Now using real user data */}
         <UserProfile
           isCollapsed={isCollapsed}
-          name="John Doe"
-          email="john@example.com"
-          initials="JD"
+          name={userData.name}
+          email={userData.email}
+          avatar={userData.avatar}
+          initials={userData.initials}
         />
 
         {/* Main Navigation */}
