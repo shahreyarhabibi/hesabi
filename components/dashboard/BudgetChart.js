@@ -2,6 +2,7 @@
 "use client";
 
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { formatCurrency } from "@/lib/constants";
 
 export default function BudgetChart({
   data = [],
@@ -39,23 +40,9 @@ export default function BudgetChart({
     COLORS = ["#E5E7EB"];
   }
 
-  // Use actual values - don't fall back to fake numbers
-  const spent = totalSpent;
-  const limit = totalBudget;
-
-  // Get currency symbol
-  const getSymbol = (curr) => {
-    const symbols = {
-      USD: "$",
-      EUR: "€",
-      GBP: "£",
-      AFN: "؋",
-      IRR: "﷼",
-    };
-    return symbols[curr] || "$";
-  };
-
-  const symbol = getSymbol(currency);
+  // Format the amounts using the formatCurrency function
+  const formattedSpent = formatCurrency(totalSpent, currency);
+  const formattedLimit = formatCurrency(totalBudget, currency);
 
   return (
     <div style={{ width: "100%", maxWidth: "400px", height: "300px" }}>
@@ -83,12 +70,11 @@ export default function BudgetChart({
             <tspan
               x="50%"
               dy="-0.3em"
-              fontSize="35"
+              fontSize="28"
               fontWeight="700"
               style={{ fill: "var(--color-foreground)" }}
             >
-              {symbol}
-              {spent.toFixed(1)}
+              {formattedSpent}
             </tspan>
             <tspan
               x="50%"
@@ -96,8 +82,7 @@ export default function BudgetChart({
               fontSize="14"
               style={{ fill: "var(--color-text)" }}
             >
-              of {symbol}
-              {limit.toFixed(1)} limit
+              of {formattedLimit} limit
             </tspan>
           </text>
         </PieChart>
