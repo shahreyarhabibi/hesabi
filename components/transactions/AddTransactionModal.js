@@ -1,6 +1,10 @@
-import { useState, useEffect } from "react";
+// components/transactions/AddTransactionModal.jsx
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
 import { FiX, FiCalendar } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import { DEFAULT_CATEGORIES } from "@/lib/constants";
 
 export default function AddTransactionModal({
   isOpen,
@@ -8,83 +12,106 @@ export default function AddTransactionModal({
   onAddTransaction,
   onUpdateTransaction,
   editingTransaction,
+  categories = [], // Categories from database
+  isLoading = false,
 }) {
   const [formData, setFormData] = useState({
     name: "",
-    category: "",
-    date: new Date().toISOString().split("T")[0],
+    description: "",
     amount: "",
     type: "expense",
-    description: "",
+    categoryId: "",
+    date: new Date().toISOString().split("T")[0],
     recurring: false,
     recurringInterval: "",
   });
 
   const [errors, setErrors] = useState({});
 
-  // Categories with types for filtering
-  const categories = [
-    { name: "Food & Dining", type: "expense" },
-    { name: "Shopping", type: "expense" },
-    { name: "Transportation", type: "expense" },
-    { name: "Entertainment", type: "expense" },
-    { name: "Bills & Utilities", type: "expense" },
-    { name: "Healthcare", type: "expense" },
-    { name: "Education", type: "expense" },
-    { name: "Income", type: "income" },
-    { name: "Transfer", type: "both" },
-    { name: "Other", type: "both" },
-  ];
+  // Use database categories or fallback to defaults
+  const availableCategories = useMemo(() => {
+    if (categories.length > 0) {
+      return categories;
+    }
+
+    // Fallback to DEFAULT_CATEGORIES if no database categories
+    const defaultCats = [];
+    let id = 1;
+
+    DEFAULT_CATEGORIES.expense.forEach((name) => {
+      defaultCats.push({ id: id++, name, type: "expense" });
+    });
+
+    DEFAULT_CATEGORIES.income.forEach((name) => {
+      defaultCats.push({ id: id++, name, type: "income" });
+    });
+
+    DEFAULT_CATEGORIES.both.forEach((name) => {
+      defaultCats.push({ id: id++, name, type: "both" });
+    });
+
+    return defaultCats;
+  }, [categories]);
 
   // Filter categories based on transaction type
-  const filteredCategories = categories.filter((category) => {
+  const filteredCategories = useMemo(() => {
     const type = formData.type === "income" ? "income" : "expense";
-    return category.type === type || category.type === "both";
-  });
+    return availableCategories.filter(
+      (c) => c.type === type || c.type === "both"
+    );
+  }, [availableCategories, formData.type]);
 
-  // Reset form when modal opens/closes or editingTransaction changes
+  // Reset form when modal opens/closes or editing transaction changes
   useEffect(() => {
     if (isOpen) {
       if (editingTransaction) {
-        // Convert the transaction data to match form structure
-        const date = editingTransaction.date.includes("/")
+        // Find the category ID based on category name
+        const category = availableCategories.find(
+          (c) => c.name === editingTransaction.category
+        );
+
+        // Handle date format
+        const date = editingTransaction.date?.includes("/")
           ? convertToDateInput(editingTransaction.date)
-          : new Date(editingTransaction.date).toISOString().split("T")[0];
+          : editingTransaction.date || new Date().toISOString().split("T")[0];
 
         setFormData({
           name: editingTransaction.name || "",
-          category: editingTransaction.category || "",
-          date: date,
-          amount: Math.abs(editingTransaction.amount)?.toString() || "",
-          type:
-            editingTransaction.type?.toLowerCase() === "income"
-              ? "income"
-              : "expense",
           description: editingTransaction.description || "",
+          amount: Math.abs(editingTransaction.amount).toString(),
+          type: editingTransaction.type?.toLowerCase() || "expense",
+          categoryId:
+            category?.id?.toString() ||
+            editingTransaction.categoryId?.toString() ||
+            "",
+          date: date,
           recurring: editingTransaction.recurring || false,
-          recurringInterval: editingTransaction.recurringInterval || "",
+          recurringInterval:
+            editingTransaction.recurring_interval ||
+            editingTransaction.recurringInterval ||
+            "",
         });
       } else {
         setFormData({
           name: "",
-          category: "",
-          date: new Date().toISOString().split("T")[0],
+          description: "",
           amount: "",
           type: "expense",
-          description: "",
+          categoryId: "",
+          date: new Date().toISOString().split("T")[0],
           recurring: false,
           recurringInterval: "",
         });
       }
       setErrors({});
     }
-  }, [isOpen, editingTransaction]);
+  }, [isOpen, editingTransaction, availableCategories]);
 
-  // Update category when type changes
+  // Update category when type changes (clear if incompatible)
   useEffect(() => {
-    if (formData.category) {
-      const currentCategory = categories.find(
-        (c) => c.name === formData.category
+    if (formData.categoryId) {
+      const currentCategory = availableCategories.find(
+        (c) => c.id.toString() === formData.categoryId
       );
       const type = formData.type === "income" ? "income" : "expense";
 
@@ -93,10 +120,10 @@ export default function AddTransactionModal({
         currentCategory.type !== type &&
         currentCategory.type !== "both"
       ) {
-        setFormData((prev) => ({ ...prev, category: "" }));
+        setFormData((prev) => ({ ...prev, categoryId: "" }));
       }
     }
-  }, [formData.type]);
+  }, [formData.type, formData.categoryId, availableCategories]);
 
   // Helper function to convert date string to YYYY-MM-DD format
   const convertToDateInput = (dateStr) => {
@@ -131,8 +158,8 @@ export default function AddTransactionModal({
       newErrors.amount = "Please enter a valid amount";
     }
 
-    if (!formData.category) {
-      newErrors.category = "Please select a category";
+    if (!formData.categoryId) {
+      newErrors.categoryId = "Please select a category";
     }
 
     if (!formData.date) {
@@ -154,32 +181,27 @@ export default function AddTransactionModal({
       return;
     }
 
-    // Format date properly
-    let formattedDate;
-    if (formData.date.includes("-")) {
-      const [year, month, day] = formData.date.split("-");
-      formattedDate = `${month}/${day}/${year}`;
-    } else {
-      formattedDate = new Date(formData.date).toLocaleDateString();
-    }
-
     const transactionData = {
       ...formData,
-      id: editingTransaction ? editingTransaction.id : Date.now(),
+      categoryId: parseInt(formData.categoryId),
       amount: parseFloat(formData.amount),
-      date: formattedDate,
+      date: new Date(formData.date).toISOString(),
     };
 
     if (editingTransaction) {
-      onUpdateTransaction(transactionData);
+      onUpdateTransaction({
+        ...transactionData,
+        id: editingTransaction.id,
+      });
     } else {
       onAddTransaction(transactionData);
     }
-    handleClose();
   };
 
   const handleClose = () => {
-    onClose();
+    if (!isLoading) {
+      onClose();
+    }
   };
 
   if (!isOpen) return null;
@@ -219,7 +241,8 @@ export default function AddTransactionModal({
             </div>
             <button
               onClick={handleClose}
-              className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              disabled={isLoading}
+              className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
             >
               <FiX className="text-lg" />
             </button>
@@ -244,8 +267,8 @@ export default function AddTransactionModal({
                   placeholder="e.g., Grocery shopping, Salary"
                   className={`w-full px-4 py-3 rounded-lg border ${
                     errors.name ? "border-red-500" : "border-text/20"
-                  } bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all`}
-                  required
+                  } bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all disabled:opacity-50`}
+                  disabled={isLoading}
                   autoFocus
                 />
                 {errors.name && (
@@ -253,19 +276,41 @@ export default function AddTransactionModal({
                 )}
               </div>
 
-              {/* Description Field */}
+              {/* Type Field */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Description
+                  Type
                 </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  placeholder="Add a note (optional)"
-                  rows={2}
-                  className="w-full px-4 py-3 rounded-lg border border-text/20 bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none"
-                />
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, type: "expense" }))
+                    }
+                    disabled={isLoading}
+                    className={`flex-1 px-4 py-3 rounded-lg border transition-all ${
+                      formData.type === "expense"
+                        ? "bg-red-500/10 border-red-500 text-red-600"
+                        : "border-text/20 hover:border-text/40"
+                    } disabled:opacity-50`}
+                  >
+                    Expense
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, type: "income" }))
+                    }
+                    disabled={isLoading}
+                    className={`flex-1 px-4 py-3 rounded-lg border transition-all ${
+                      formData.type === "income"
+                        ? "bg-green-500/10 border-green-500 text-green-600"
+                        : "border-text/20 hover:border-text/40"
+                    } disabled:opacity-50`}
+                  >
+                    Income
+                  </button>
+                </div>
               </div>
 
               {/* Category Field */}
@@ -275,24 +320,24 @@ export default function AddTransactionModal({
                 </label>
                 <div className="relative">
                   <select
-                    name="category"
-                    value={formData.category}
+                    name="categoryId"
+                    value={formData.categoryId}
                     onChange={handleChange}
+                    disabled={isLoading}
                     className={`w-full px-4 py-3 rounded-lg border ${
-                      errors.category ? "border-red-500" : "border-text/20"
-                    } bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none`}
-                    required
+                      errors.categoryId ? "border-red-500" : "border-text/20"
+                    } bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none disabled:opacity-50`}
                   >
                     <option className="bg-background text-foreground" value="">
                       Select a category
                     </option>
-                    {filteredCategories.map((cat) => (
+                    {filteredCategories.map((category) => (
                       <option
-                        key={cat.name}
-                        value={cat.name}
+                        key={category.id}
+                        value={category.id}
                         className="bg-background text-foreground"
                       >
-                        {cat.name}
+                        {category.name}
                       </option>
                     ))}
                   </select>
@@ -312,44 +357,11 @@ export default function AddTransactionModal({
                     </svg>
                   </div>
                 </div>
-                {errors.category && (
-                  <p className="mt-1 text-sm text-red-500">{errors.category}</p>
+                {errors.categoryId && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.categoryId}
+                  </p>
                 )}
-              </div>
-
-              {/* Type Field */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Type
-                </label>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFormData((prev) => ({ ...prev, type: "expense" }))
-                    }
-                    className={`flex-1 px-4 py-3 rounded-lg border transition-all ${
-                      formData.type === "expense"
-                        ? "bg-red-500/10 border-red-500 text-red-600"
-                        : "border-text/20 hover:border-text/40"
-                    }`}
-                  >
-                    Expense
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFormData((prev) => ({ ...prev, type: "income" }))
-                    }
-                    className={`flex-1 px-4 py-3 rounded-lg border transition-all ${
-                      formData.type === "income"
-                        ? "bg-green-500/10 border-green-500 text-green-600"
-                        : "border-text/20 hover:border-text/40"
-                    }`}
-                  >
-                    Income
-                  </button>
-                </div>
               </div>
 
               {/* Date and Amount Row */}
@@ -365,10 +377,10 @@ export default function AddTransactionModal({
                       name="date"
                       value={formData.date}
                       onChange={handleChange}
+                      disabled={isLoading}
                       className={`w-full pl-10 pr-4 py-3 rounded-lg border ${
                         errors.date ? "border-red-500" : "border-text/20"
-                      } bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all`}
-                      required
+                      } bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all disabled:opacity-50`}
                     />
                   </div>
                   {errors.date && (
@@ -392,10 +404,10 @@ export default function AddTransactionModal({
                       placeholder="0.00"
                       min="0"
                       step="0.01"
+                      disabled={isLoading}
                       className={`w-full pl-8 pr-4 py-3 rounded-lg border ${
                         errors.amount ? "border-red-500" : "border-text/20"
-                      } bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all`}
-                      required
+                      } bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all disabled:opacity-50`}
                     />
                   </div>
                   {errors.amount && (
@@ -404,7 +416,23 @@ export default function AddTransactionModal({
                 </div>
               </div>
 
-              {/* Recurring Transaction */}
+              {/* Description Field */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="Add a note (optional)"
+                  rows={2}
+                  disabled={isLoading}
+                  className="w-full px-4 py-3 rounded-lg border border-text/20 bg-transparent text-foreground placeholder:text-text/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none disabled:opacity-50"
+                />
+              </div>
+
+              {/* Recurring Checkbox */}
               <div>
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
@@ -412,6 +440,7 @@ export default function AddTransactionModal({
                     name="recurring"
                     checked={formData.recurring}
                     onChange={handleChange}
+                    disabled={isLoading}
                     className="w-5 h-5 rounded border-text/20 text-primary focus:ring-primary/40"
                   />
                   <span className="text-sm font-medium text-foreground">
@@ -420,77 +449,85 @@ export default function AddTransactionModal({
                 </label>
               </div>
 
-              {/* Recurring Interval (shown only when recurring is checked) */}
-              {formData.recurring && (
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Repeat Every <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      name="recurringInterval"
-                      value={formData.recurringInterval}
-                      onChange={handleChange}
-                      className={`w-full px-4 py-3 rounded-lg border ${
-                        errors.recurringInterval
-                          ? "border-red-500"
-                          : "border-text/20"
-                      } bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none`}
-                    >
-                      <option
-                        className="bg-background text-foreground"
-                        value=""
+              {/* Recurring Interval (shown only if recurring is checked) */}
+              <AnimatePresence>
+                {formData.recurring && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Repeat Every <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <select
+                        name="recurringInterval"
+                        value={formData.recurringInterval}
+                        onChange={handleChange}
+                        disabled={isLoading}
+                        className={`w-full px-4 py-3 rounded-lg border ${
+                          errors.recurringInterval
+                            ? "border-red-500"
+                            : "border-text/20"
+                        } bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none disabled:opacity-50`}
                       >
-                        Select interval
-                      </option>
-                      <option
-                        className="bg-background text-foreground"
-                        value="daily"
-                      >
-                        Daily
-                      </option>
-                      <option
-                        className="bg-background text-foreground"
-                        value="weekly"
-                      >
-                        Weekly
-                      </option>
-                      <option
-                        className="bg-background text-foreground"
-                        value="monthly"
-                      >
-                        Monthly
-                      </option>
-                      <option
-                        className="bg-background text-foreground"
-                        value="yearly"
-                      >
-                        Yearly
-                      </option>
-                    </select>
-                    <div className="absolute right-3 top-3 pointer-events-none">
-                      <svg
-                        className="w-5 h-5 text-text/50"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
+                        <option
+                          className="bg-background text-foreground"
+                          value=""
+                        >
+                          Select interval
+                        </option>
+                        <option
+                          className="bg-background text-foreground"
+                          value="daily"
+                        >
+                          Daily
+                        </option>
+                        <option
+                          className="bg-background text-foreground"
+                          value="weekly"
+                        >
+                          Weekly
+                        </option>
+                        <option
+                          className="bg-background text-foreground"
+                          value="monthly"
+                        >
+                          Monthly
+                        </option>
+                        <option
+                          className="bg-background text-foreground"
+                          value="yearly"
+                        >
+                          Yearly
+                        </option>
+                      </select>
+                      <div className="absolute right-3 top-3 pointer-events-none">
+                        <svg
+                          className="w-5 h-5 text-text/50"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
                     </div>
-                  </div>
-                  {errors.recurringInterval && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.recurringInterval}
-                    </p>
-                  )}
-                </div>
-              )}
+                    {errors.recurringInterval && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.recurringInterval}
+                      </p>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Footer Buttons */}
@@ -498,15 +535,45 @@ export default function AddTransactionModal({
               <button
                 type="button"
                 onClick={handleClose}
-                className="flex-1 px-4 py-3 rounded-lg border border-text/20 hover:border-text/40 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium"
+                disabled={isLoading}
+                className="flex-1 px-4 py-3 rounded-lg border border-text/20 hover:border-text/40 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-3 rounded-lg bg-foreground hover:bg-primary/20 hover:text-foreground text-background font-semibold shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200"
+                disabled={isLoading}
+                className="flex-1 px-4 py-3 rounded-lg bg-foreground hover:bg-primary/20 hover:text-foreground text-background font-semibold shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                {editingTransaction ? "Update" : "Add"}
+                {isLoading ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    {editingTransaction ? "Updating..." : "Adding..."}
+                  </>
+                ) : editingTransaction ? (
+                  "Update"
+                ) : (
+                  "Add"
+                )}
               </button>
             </div>
           </form>

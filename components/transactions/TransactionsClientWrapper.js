@@ -132,6 +132,9 @@ export default function TransactionsClientWrapper({
     async (newTransaction) => {
       setIsLoading(true);
       try {
+        // Normalize the type to lowercase for comparison
+        const transactionType = newTransaction.type.toLowerCase();
+
         const response = await fetch("/api/transactions", {
           method: "POST",
           headers: {
@@ -142,7 +145,7 @@ export default function TransactionsClientWrapper({
             name: newTransaction.name,
             description: newTransaction.description,
             amount: parseFloat(newTransaction.amount),
-            type: newTransaction.type === "Income" ? "income" : "expense",
+            type: transactionType, // Already lowercase from modal
             date: newTransaction.date,
             recurring: newTransaction.recurring || false,
             recurringInterval: newTransaction.recurringInterval || null,
@@ -166,10 +169,10 @@ export default function TransactionsClientWrapper({
           name: newTransaction.name,
           description: newTransaction.description,
           amount:
-            newTransaction.type === "Income"
+            transactionType === "income"
               ? Math.abs(parseFloat(newTransaction.amount))
               : -Math.abs(parseFloat(newTransaction.amount)),
-          type: newTransaction.type === "Income" ? "Income" : "Expense",
+          type: transactionType === "income" ? "Income" : "Expense", // Capitalize for display
           category: category?.name || "Other",
           category_icon: category?.icon || "default",
           category_color: category?.color || "#6B7280",
@@ -180,7 +183,6 @@ export default function TransactionsClientWrapper({
         setIsAddModalOpen(false);
         setCurrentPage(1);
 
-        // Refresh to update dashboard stats
         router.refresh();
       } catch (error) {
         console.error("Error creating transaction:", error);
@@ -196,6 +198,9 @@ export default function TransactionsClientWrapper({
     async (updatedTransaction) => {
       setIsLoading(true);
       try {
+        // Normalize the type to lowercase for comparison
+        const transactionType = updatedTransaction.type.toLowerCase();
+
         const response = await fetch(
           `/api/transactions/${updatedTransaction.id}`,
           {
@@ -208,7 +213,7 @@ export default function TransactionsClientWrapper({
               name: updatedTransaction.name,
               description: updatedTransaction.description,
               amount: parseFloat(updatedTransaction.amount),
-              type: updatedTransaction.type === "Income" ? "income" : "expense",
+              type: transactionType, // Already lowercase from modal
               date: updatedTransaction.date,
               recurring: updatedTransaction.recurring || false,
               recurringInterval: updatedTransaction.recurringInterval || null,
@@ -234,11 +239,10 @@ export default function TransactionsClientWrapper({
                   name: updatedTransaction.name,
                   description: updatedTransaction.description,
                   amount:
-                    updatedTransaction.type === "Income"
+                    transactionType === "income"
                       ? Math.abs(parseFloat(updatedTransaction.amount))
                       : -Math.abs(parseFloat(updatedTransaction.amount)),
-                  type:
-                    updatedTransaction.type === "Income" ? "Income" : "Expense",
+                  type: transactionType === "income" ? "Income" : "Expense", // Capitalize for display
                   category: category?.name || t.category,
                   category_icon: category?.icon || t.category_icon,
                   category_color: category?.color || t.category_color,
@@ -251,7 +255,6 @@ export default function TransactionsClientWrapper({
         setIsAddModalOpen(false);
         setEditingTransaction(null);
 
-        // Refresh to update dashboard stats
         router.refresh();
       } catch (error) {
         console.error("Error updating transaction:", error);
