@@ -84,10 +84,6 @@ export default function TransactionsClientWrapper({
 
   const handleDeleteTransaction = useCallback(
     async (id) => {
-      if (!confirm("Are you sure you want to delete this transaction?")) {
-        return;
-      }
-
       setIsLoading(true);
       try {
         const response = await fetch(`/api/transactions/${id}`, {

@@ -6,6 +6,7 @@ import { FiMoreVertical } from "react-icons/fi";
 import CategoryIcon from "../dashboard/CategoryIcon";
 import { formatCurrency, formatDate } from "@/lib/constants";
 import { BiDownArrowAlt, BiUpArrowAlt } from "react-icons/bi";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 function TransactionMobileRow({
   transaction,
@@ -13,8 +14,10 @@ function TransactionMobileRow({
   onEdit,
   onHide,
   onDelete,
+  isDeleting = false,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleHide = () => {
     setMenuOpen(false);
@@ -26,9 +29,14 @@ function TransactionMobileRow({
     onEdit(transaction);
   };
 
-  const handleDelete = () => {
+  const handleDeleteClick = () => {
     setMenuOpen(false);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = () => {
     onDelete(transaction.id);
+    setShowDeleteModal(false);
   };
 
   // Format amount
@@ -127,7 +135,7 @@ function TransactionMobileRow({
                 Edit
               </button>
               <button
-                onClick={handleDelete}
+                onClick={handleDeleteClick}
                 className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
               >
                 Delete
@@ -135,24 +143,35 @@ function TransactionMobileRow({
             </div>
           </>
         )}
+
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmationModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDeleteConfirm}
+          title="Delete Transaction"
+          message="Are you sure you want to delete this transaction? This action cannot be undone."
+          itemName={transaction.name}
+          isLoading={isDeleting}
+        />
+
+        <style jsx>{`
+          @keyframes fade-in {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          .animate-fade-in {
+            animation: fade-in 0.2s ease-out;
+          }
+        `}</style>
       </td>
-
-      <style jsx>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.2s ease-out;
-        }
-      `}</style>
     </>
   );
 }

@@ -1,10 +1,11 @@
 // components/transactions/TransactionDesktopRow.jsx
 "use client";
-import { BiDownArrowAlt } from "react-icons/bi";
-import { BiUpArrowAlt } from "react-icons/bi";
-import { memo } from "react";
+
+import { BiDownArrowAlt, BiUpArrowAlt } from "react-icons/bi";
+import { memo, useState } from "react";
 import CategoryIcon from "../dashboard/CategoryIcon";
 import { formatCurrency, formatDate } from "@/lib/constants";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 function TransactionDesktopRow({
   transaction,
@@ -12,13 +13,21 @@ function TransactionDesktopRow({
   onEdit,
   onHide,
   onDelete,
+  isDeleting = false,
 }) {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const handleEdit = () => {
     onEdit(transaction);
   };
 
-  const handleDelete = () => {
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = () => {
     onDelete(transaction.id);
+    setShowDeleteModal(false);
   };
 
   const handleHide = () => {
@@ -164,7 +173,7 @@ function TransactionDesktopRow({
             </svg>
           </button>
           <button
-            onClick={handleDelete}
+            onClick={handleDeleteClick}
             className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-text hover:text-red-600 transition-colors"
             title="Delete"
             aria-label="Delete transaction"
@@ -184,6 +193,17 @@ function TransactionDesktopRow({
             </svg>
           </button>
         </div>
+
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmationModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDeleteConfirm}
+          title="Delete Transaction"
+          message="Are you sure you want to delete this transaction? This action cannot be undone."
+          itemName={transaction.name}
+          isLoading={isDeleting}
+        />
       </td>
     </>
   );
