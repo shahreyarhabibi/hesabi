@@ -17,7 +17,10 @@ export default async function DashboardLayout({ children }) {
       <SidebarWrapper />
 
       {/* Main Content */}
-      <main className="flex-1 mt-5 md:mt-0 overflow-y-auto bg-background pb-20 md:pb-0">
+      <main
+        id="main-content"
+        className="flex-1 mt-5 md:mt-0 overflow-y-auto bg-background pb-20 md:pb-0"
+      >
         <div className="p-4 md:p-8">{children}</div>
       </main>
     </div>

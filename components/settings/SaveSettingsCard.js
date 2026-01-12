@@ -6,6 +6,7 @@ import LoadingSpinner from "./LoadingSpinner";
 
 const SaveSettingsCard = memo(function SaveSettingsCard({
   isSaving,
+  hasChanges,
   onReset,
   onSave,
 }) {
@@ -16,22 +17,25 @@ const SaveSettingsCard = memo(function SaveSettingsCard({
           <div>
             <p className="font-medium">Save your changes</p>
             <p className="text-sm text-text/70">
-              All changes will be applied immediately
+              {hasChanges
+                ? "You have unsaved changes"
+                : "All changes will be applied immediately"}
             </p>
           </div>
           <div className="flex gap-4">
             <button
               onClick={onReset}
-              className="px-6 py-3 rounded-xl border border-text/20 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+              disabled={isSaving}
+              className="px-6 py-3 rounded-xl border border-text/20 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               type="button"
             >
               Reset
             </button>
             <button
               onClick={onSave}
-              disabled={isSaving}
+              disabled={isSaving || !hasChanges}
               className={`px-8 py-3 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-all duration-200 min-w-[140px] ${
-                isSaving ? "opacity-70 cursor-not-allowed" : ""
+                isSaving || !hasChanges ? "opacity-70 cursor-not-allowed" : ""
               }`}
               type="button"
             >

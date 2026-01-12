@@ -1,6 +1,4 @@
 // scripts/migrate-db.js
-// Run this script once to update existing database: node scripts/migrate-db.js
-
 import Database from "better-sqlite3";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -17,72 +15,93 @@ function migrateDatabase() {
   console.log("Starting database migration...");
 
   try {
-    // Check if avatar column exists
+    // Get current columns
     const tableInfo = db.prepare("PRAGMA table_info(users)").all();
-    const hasAvatarColumn = tableInfo.some((col) => col.name === "avatar");
+    const existingColumns = tableInfo.map((col) => col.name);
 
-    if (!hasAvatarColumn) {
-      console.log("Adding avatar column to users table...");
-      db.exec("ALTER TABLE users ADD COLUMN avatar TEXT");
-      console.log("✓ Avatar column added successfully");
-    } else {
-      console.log("✓ Avatar column already exists");
+    console.log("Current columns:", existingColumns);
+
+    // Define all required columns
+    const requiredColumns = [
+      { name: "avatar", definition: "TEXT" },
+      { name: "currency", definition: "TEXT DEFAULT 'USD'" },
+      { name: "theme", definition: "TEXT DEFAULT 'light'" },
+      { name: "updated_at", definition: "DATETIME DEFAULT CURRENT_TIMESTAMP" },
+    ];
+
+    // Add missing columns
+    for (const column of requiredColumns) {
+      if (!existingColumns.includes(column.name)) {
+        console.log(`Adding ${column.name} column...`);
+        db.exec(
+          `ALTER TABLE users ADD COLUMN ${column.name} ${column.definition}`
+        );
+        console.log(`✓ ${column.name} column added successfully`);
+      } else {
+        console.log(`✓ ${column.name} column already exists`);
+      }
     }
 
-    // Check if updated_at column exists
-    const hasUpdatedAtColumn = tableInfo.some(
-      (col) => col.name === "updated_at"
-    );
+    // Drop existing trigger if it exists (to recreate it cleanly)
+    db.exec("DROP TRIGGER IF EXISTS update_user_timestamp");
 
-    if (!hasUpdatedAtColumn) {
-      console.log("Adding updated_at column to users table...");
-      db.exec(
-        "ALTER TABLE users ADD COLUMN updated_at DATETIME DEFAULT CURRENT_TIMESTAMP"
-      );
-      console.log("✓ updated_at column added successfully");
-
-      // Create trigger
-      db.exec(`
-        CREATE TRIGGER IF NOT EXISTS update_user_timestamp 
-        AFTER UPDATE ON users
-        BEGIN
-          UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
-        END;
-      `);
-      console.log("✓ Timestamp trigger created successfully");
-    } else {
-      console.log("✓ updated_at column already exists");
-    }
+    // Create trigger
+    db.exec(`
+      CREATE TRIGGER IF NOT EXISTS update_user_timestamp 
+      AFTER UPDATE ON users
+      BEGIN
+        UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+      END;
+    `);
+    console.log("✓ Timestamp trigger created successfully");
 
     // Set default avatar for existing users who don't have one
-    console.log("\nSetting default avatar for existing users...");
-    const result = db
+    console.log("\nSetting default values for existing users...");
+
+    const avatarResult = db
       .prepare(
         "UPDATE users SET avatar = ? WHERE avatar IS NULL OR avatar = ''"
       )
       .run(DEFAULT_AVATAR);
+    console.log(
+      `✓ Updated ${avatarResult.changes} user(s) with default avatar`
+    );
 
-    console.log(`✓ Updated ${result.changes} user(s) with default avatar`);
+    const currencyResult = db
+      .prepare(
+        "UPDATE users SET currency = 'USD' WHERE currency IS NULL OR currency = ''"
+      )
+      .run();
+    console.log(
+      `✓ Updated ${currencyResult.changes} user(s) with default currency`
+    );
+
+    const themeResult = db
+      .prepare(
+        "UPDATE users SET theme = 'light' WHERE theme IS NULL OR theme = ''"
+      )
+      .run();
+    console.log(`✓ Updated ${themeResult.changes} user(s) with default theme`);
+
+    // Show final table structure
+    const finalTableInfo = db.prepare("PRAGMA table_info(users)").all();
+    console.log("\n📊 Final table structure:");
+    finalTableInfo.forEach((col) => {
+      console.log(
+        `   ${col.name}: ${col.type} ${
+          col.dflt_value ? `(default: ${col.dflt_value})` : ""
+        }`
+      );
+    });
 
     // Show summary
     const totalUsers = db.prepare("SELECT COUNT(*) as count FROM users").get();
-    const usersWithDefault = db
-      .prepare("SELECT COUNT(*) as count FROM users WHERE avatar = ?")
-      .get(DEFAULT_AVATAR);
-    const usersWithCustom = db
-      .prepare(
-        "SELECT COUNT(*) as count FROM users WHERE avatar != ? AND avatar IS NOT NULL"
-      )
-      .get(DEFAULT_AVATAR);
-
-    console.log("\n📊 Avatar Summary:");
-    console.log(`   Total users: ${totalUsers.count}`);
-    console.log(`   Using default avatar: ${usersWithDefault.count}`);
-    console.log(`   Using custom avatar: ${usersWithCustom.count}`);
+    console.log(`\n   Total users: ${totalUsers.count}`);
 
     console.log("\n✓ Database migration completed successfully!");
   } catch (error) {
     console.error("✗ Migration failed:", error.message);
+    console.error(error);
     process.exit(1);
   } finally {
     db.close();

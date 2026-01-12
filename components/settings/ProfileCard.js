@@ -54,6 +54,7 @@ const ProfileCard = memo(function ProfileCard({
             name="firstName"
             value={userProfile.firstName}
             onChange={onProfileChange}
+            required
           />
           <InputField
             label="Last Name"
@@ -71,6 +72,7 @@ const ProfileCard = memo(function ProfileCard({
           value={userProfile.email}
           onChange={onProfileChange}
           className="mt-2"
+          required
         />
       </div>
     </div>

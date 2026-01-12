@@ -15,6 +15,7 @@ const CurrencySelector = memo(function CurrencySelector({
         {currencyOptions.map((currency) => (
           <button
             key={currency.code}
+            type="button"
             onClick={() => onSelect(currency.code)}
             className={`p-3 rounded-xl border transition-all duration-200 text-center ${
               selectedCurrency === currency.code

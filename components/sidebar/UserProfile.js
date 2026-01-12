@@ -37,7 +37,7 @@ export default function UserProfile({
             />
           ) : (
             // Fallback to initials only if image fails to load
-            <div className="w-[45px] h-[45px] bg-primary rounded-full flex items-center justify-center text-lg font-bold ring-2 ring-primary/30">
+            <div className="w-11.25 h-11.25 bg-primary rounded-full flex items-center justify-center text-lg font-bold ring-2 ring-primary/30">
               {initials}
             </div>
           )}

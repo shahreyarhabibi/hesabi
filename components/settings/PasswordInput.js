@@ -29,6 +29,7 @@ const PasswordInput = memo(function PasswordInput({
           onChange={onChange}
           className="w-full rounded-xl border border-text/20 bg-background dark:bg-gray-900 px-4 py-3 pr-12 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent"
           placeholder={placeholder}
+          autoComplete="off"
         />
         <button
           type="button"

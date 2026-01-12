@@ -1,5 +1,5 @@
 // scripts/migrate-db.js
-// Run this script once to update existing database: node scripts/migrate-db.js
+// Run once: node scripts/migrate-db.js
 
 import Database from "better-sqlite3";
 import path from "path";
@@ -15,39 +15,51 @@ function migrateDatabase() {
   console.log("Starting database migration...");
 
   try {
-    // Check if avatar column exists
     const tableInfo = db.prepare("PRAGMA table_info(users)").all();
-    const hasAvatarColumn = tableInfo.some((col) => col.name === "avatar");
 
-    if (!hasAvatarColumn) {
-      console.log("Adding avatar column to users table...");
-      db.exec("ALTER TABLE users ADD COLUMN avatar TEXT");
-      console.log("✓ Avatar column added successfully");
+    /* =======================
+       Theme column
+    ======================= */
+    const hasThemeColumn = tableInfo.some((col) => col.name === "theme");
+
+    if (!hasThemeColumn) {
+      console.log("Adding theme column...");
+      db.exec("ALTER TABLE users ADD COLUMN theme TEXT DEFAULT 'light'");
+      console.log("✓ Theme column added");
     } else {
-      console.log("✓ Avatar column already exists");
+      console.log("✓ Theme column already exists");
     }
 
-    // Check if updated_at column exists
+    /* =======================
+       updated_at column
+    ======================= */
     const hasUpdatedAtColumn = tableInfo.some(
       (col) => col.name === "updated_at"
     );
 
     if (!hasUpdatedAtColumn) {
-      console.log("Adding updated_at column to users table...");
-      db.exec(
-        "ALTER TABLE users ADD COLUMN updated_at DATETIME DEFAULT CURRENT_TIMESTAMP"
-      );
-      console.log("✓ updated_at column added successfully");
+      console.log("Adding updated_at column...");
+      db.exec("ALTER TABLE users ADD COLUMN updated_at DATETIME");
 
-      // Create trigger
+      // Backfill existing rows
       db.exec(`
-        CREATE TRIGGER IF NOT EXISTS update_user_timestamp 
+        UPDATE users
+        SET updated_at = CURRENT_TIMESTAMP
+        WHERE updated_at IS NULL;
+      `);
+
+      // Trigger for future updates
+      db.exec(`
+        CREATE TRIGGER IF NOT EXISTS update_user_timestamp
         AFTER UPDATE ON users
         BEGIN
-          UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+          UPDATE users
+          SET updated_at = CURRENT_TIMESTAMP
+          WHERE id = NEW.id;
         END;
       `);
-      console.log("✓ Timestamp trigger created successfully");
+
+      console.log("✓ updated_at column + trigger created");
     } else {
       console.log("✓ updated_at column already exists");
     }
