@@ -10,14 +10,12 @@ export default function NavItem({ item, isActive, isCollapsed, onClick }) {
       className={`flex items-center rounded-lg p-3 transition-all duration-200 group ${
         isActive
           ? "bg-accent text-white shadow-lg"
-          : "hover:bg-gray-700 text-white/70 dark:text-text hover:text-background dark:hover:text-foreground"
+          : "hover:bg-gray-700 text-white/50  hover:text-[#F8FAFC] "
       } ${isCollapsed ? "justify-center" : ""}`}
     >
       <Icon
         className={`text-xl ${
-          isActive
-            ? "text-background dark:text-foreground"
-            : "group-hover:text-background dark:group-hover:text-foreground"
+          isActive ? "text-[#F8FAFC]" : "group-hover:text-[#F8FAFC]"
         }`}
       />
       {!isCollapsed && <span className="ml-3 font-medium">{item.label}</span>}

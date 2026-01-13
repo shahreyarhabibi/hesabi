@@ -23,7 +23,7 @@ export default function PotsSection({
   const hasNoPots = !potsData || potsData.length === 0;
 
   return (
-    <div className="flex flex-col w-full text-foreground bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 mt-5 p-6 gap-5 rounded-2xl">
+    <div className="flex flex-col w-full text-foreground shadow-xl bg-brand-gradient border border-text/10 mt-5 p-6 gap-5 rounded-2xl">
       <SectionHeader title="Pots" linkHref="/pots" />
 
       <div className="flex">

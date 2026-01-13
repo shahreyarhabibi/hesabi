@@ -12,6 +12,7 @@ import SettingsSkeleton from "./SettingsSkeleton";
 import { DEFAULT_PASSWORD_DATA } from "./constants";
 import { AVATAR_OPTIONS, CURRENCY_OPTIONS } from "@/lib/constants";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import ThemeToggle from "./ThemeToggle";
 
 export default function SettingsContent() {
   const router = useRouter();
@@ -25,7 +26,6 @@ export default function SettingsContent() {
   } = useUserProfile();
 
   const [passwordData, setPasswordData] = useState(DEFAULT_PASSWORD_DATA);
-  const [darkMode, setDarkMode] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [hasChanges, setHasChanges] = useState(false);
@@ -35,7 +35,6 @@ export default function SettingsContent() {
   useEffect(() => {
     if (!isLoading && userProfile.email) {
       setOriginalProfile({ ...userProfile });
-      setDarkMode(userProfile.theme === "dark");
     }
   }, [isLoading, userProfile.email]);
 
@@ -61,8 +60,7 @@ export default function SettingsContent() {
       userProfile.lastName !== originalProfile.lastName ||
       userProfile.email !== originalProfile.email ||
       userProfile.avatar !== originalProfile.avatar ||
-      userProfile.currency !== originalProfile.currency ||
-      (darkMode ? "dark" : "light") !== originalProfile.theme;
+      userProfile.currency !== originalProfile.currency;
 
     const passwordChanged =
       passwordData.currentPassword ||
@@ -70,7 +68,7 @@ export default function SettingsContent() {
       passwordData.confirmPassword;
 
     setHasChanges(profileChanged || !!passwordChanged);
-  }, [userProfile, passwordData, darkMode, originalProfile]);
+  }, [userProfile, passwordData, originalProfile]);
 
   const handleProfileChange = useCallback(
     (e) => {
@@ -99,10 +97,6 @@ export default function SettingsContent() {
     [setUserProfile]
   );
 
-  const handleToggleDarkMode = useCallback(() => {
-    setDarkMode((prev) => !prev);
-  }, []);
-
   const clearMessage = useCallback(() => {
     setMessage({ type: "", text: "" });
   }, []);
@@ -110,7 +104,6 @@ export default function SettingsContent() {
   const handleReset = useCallback(() => {
     if (originalProfile) {
       setUserProfile({ ...originalProfile });
-      setDarkMode(originalProfile.theme === "dark");
     }
     setPasswordData(DEFAULT_PASSWORD_DATA);
     setMessage({ type: "info", text: "Settings reset to original values!" });
@@ -186,7 +179,6 @@ export default function SettingsContent() {
         email: userProfile.email,
         avatar: userProfile.avatar,
         currency: userProfile.currency,
-        theme: darkMode ? "dark" : "light",
       });
 
       if (!profileResult.success) {
@@ -213,16 +205,8 @@ export default function SettingsContent() {
         setPasswordData(DEFAULT_PASSWORD_DATA);
         setOriginalProfile({
           ...userProfile,
-          theme: darkMode ? "dark" : "light",
         });
         setHasChanges(false);
-
-        // Apply theme change
-        if (darkMode) {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
-        }
 
         // Refresh the page to update sidebar and other components
         router.refresh();
@@ -237,14 +221,7 @@ export default function SettingsContent() {
     } finally {
       setIsSaving(false);
     }
-  }, [
-    passwordData,
-    userProfile,
-    darkMode,
-    updateProfile,
-    updatePassword,
-    router,
-  ]);
+  }, [passwordData, userProfile, updateProfile, updatePassword, router]);
 
   if (isLoading) {
     return <SettingsSkeleton />;
@@ -289,9 +266,7 @@ export default function SettingsContent() {
           <PreferencesCard
             userProfile={userProfile}
             currencyOptions={CURRENCY_OPTIONS}
-            darkMode={darkMode}
             onCurrencySelect={handleCurrencySelect}
-            onToggleDarkMode={handleToggleDarkMode}
           />
         </div>
       </div>

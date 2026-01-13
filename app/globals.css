@@ -2,7 +2,7 @@
 
 /* ===== Brand Theme ===== */
 :root {
-  /* Light mode */
+  /* Light mode (default) */
   --background: 210 40% 98%;
   --foreground: 220 30% 15%;
   --text: 220 15% 40%;
@@ -10,22 +10,38 @@
   /* Brand */
   --primary: 220 85% 57%;
   --accent: 220 70% 45%;
+  --brand-gradient: linear-gradient(0deg, #f8fafc, #f8fafc);
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: light) {
-  :root {
+/* Dark mode - via .dark class (manual toggle) */
+.dark {
+  --background: 220 30% 8%;
+  --foreground: 210 40% 98%;
+  --text: 210 20% 70%;
+
+  --primary: 220 85% 57%;
+  --accent: 220 70% 45%;
+
+  --brand-gradient: linear-gradient(45deg, #0e121b, RGB(53, 114, 239, 0.2));
+}
+
+/* Dark mode - via system preference (auto mode) */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
     --background: 220 30% 8%;
     --foreground: 210 40% 98%;
     --text: 210 20% 70%;
 
     --primary: 220 85% 57%;
     --accent: 220 70% 45%;
+
+    --brand-gradient: linear-gradient(45deg, #0e121b, RGB(53, 114, 239, 0.2));
   }
 }
 
 /* ===== Tailwind theme mapping ===== */
 @theme inline {
+  --background-image-brand-gradient: var(--brand-gradient);
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-text: hsl(var(--text));
