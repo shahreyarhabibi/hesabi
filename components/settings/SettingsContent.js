@@ -12,7 +12,6 @@ import SettingsSkeleton from "./SettingsSkeleton";
 import { DEFAULT_PASSWORD_DATA } from "./constants";
 import { AVATAR_OPTIONS, CURRENCY_OPTIONS } from "@/lib/constants";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import ThemeToggle from "./ThemeToggle";
 
 export default function SettingsContent() {
   const router = useRouter();

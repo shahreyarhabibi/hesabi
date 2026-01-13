@@ -22,7 +22,7 @@ const PreferencesCard = memo(function PreferencesCard({
         onSelect={onCurrencySelect}
       />
 
-      <ThemeToggle darkMode={darkMode} onToggle={onToggleDarkMode} />
+      <ThemeToggle />
     </div>
   );
 });
