@@ -18,7 +18,7 @@ export default function BudgetSummaryCard({
   }));
 
   return (
-    <div className="flex flex-col h-180 items-center md:w-2/5 text-foreground bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-6 rounded-2xl">
+    <div className="flex flex-col  h-160 items-center md:w-2/5 text-foreground bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-6 rounded-2xl">
       <BudgetChart
         data={chartData}
         totalSpent={totalSpent}
@@ -30,30 +30,38 @@ export default function BudgetSummaryCard({
         {budgets.length === 0 ? (
           <p className="text-text/70 mt-5 text-center">No budgets to display</p>
         ) : (
-          budgets.map((budget) => {
-            const spend = spendData[budget.name] || 0;
-            return (
-              <div
-                key={budget.id}
-                className="flex mt-5 items-center justify-between pb-3 border-b border-text/20"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-1 h-10"
-                    style={{ backgroundColor: budget.color }}
-                  ></div>
-                  <p>{budget.name}</p>
-                </div>
+          budgets
+            // 1. Create a copy and sort by date (newest first)
+            .slice()
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            // 2. Take only the first 3 items
+            .slice(0, 3)
+            .map((budget) => {
+              const spend = spendData[budget.name] || 0;
+              return (
+                <div
+                  key={budget.id}
+                  className="flex mt-5 items-center justify-between pb-3 border-b border-text/20"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-1 h-10"
+                      style={{ backgroundColor: budget.color }}
+                    ></div>
+                    <p>{budget.name}</p>
+                  </div>
 
-                <div className="flex gap-3">
-                  <p className="font-bold">{formatCurrency(spend, currency)}</p>
-                  <span className="text-text">
-                    of {formatCurrency(budget.max, currency)}
-                  </span>
+                  <div className="flex gap-3">
+                    <p className="font-bold">
+                      {formatCurrency(spend, currency)}
+                    </p>
+                    <span className="text-text">
+                      of {formatCurrency(budget.max, currency)}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            );
-          })
+              );
+            })
         )}
       </div>
     </div>

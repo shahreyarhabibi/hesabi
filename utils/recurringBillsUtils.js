@@ -71,7 +71,6 @@ export function formatDueDate(dateString, recurringInterval) {
       return `Yearly - ${monthAbbr} ${getOrdinal(day)}`;
 
     default:
-      // Fallback to monthly if no interval specified
       return `Monthly - ${getOrdinal(day)}`;
   }
 }
@@ -108,7 +107,6 @@ export function sortBills(bills, sortBy) {
       return sorted.sort((a, b) => {
         const dateA = new Date(a.date);
         const dateB = new Date(b.date);
-        // Sort by day of month for recurring bills
         return dateA.getDate() - dateB.getDate();
       });
     case "amount":
@@ -123,9 +121,15 @@ export function calculateTotalAmount(bills) {
   return bills.reduce((total, bill) => total + Math.abs(bill.amount), 0);
 }
 
-// Calculate summary metrics
+// Calculate summary metrics with specific rules:
+// - Monthly: paid if current date > bill date, due soon if <= 5 days
+// - Weekly: paid if current day > bill day, due soon if <= 2 days
+// - Daily: appears in all categories (paid, upcoming, due soon)
+// - Yearly: paid if date passed this year, due soon if <= 7 days
 export function calculateSummaryMetrics(bills) {
   const today = new Date();
+  const todayDayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  const todayDate = today.getDate(); // Day of month (1-31)
 
   let paidBillsCount = 0;
   let paidBillsAmount = 0;
@@ -139,26 +143,116 @@ export function calculateSummaryMetrics(bills) {
     const amount = Math.abs(bill.amount);
     const interval = bill.recurring_interval || "monthly";
 
-    // Calculate next due date based on interval
-    let nextDueDate = getNextDueDate(billDate, interval, today);
+    switch (interval) {
+      case "daily":
+        // Daily bills count in ALL categories since we pay them every day
+        paidBillsCount++;
+        paidBillsAmount += amount;
+        upcomingBillsCount++;
+        upcomingBillsAmount += amount;
+        dueSoonBillsCount++;
+        dueSoonBillsAmount += amount;
+        break;
 
-    // Calculate days until due
-    const daysUntilDue = Math.ceil(
-      (nextDueDate - today) / (1000 * 60 * 60 * 24)
-    );
+      case "weekly":
+        const billDayOfWeek = billDate.getDay(); // 0-6 (Sun-Sat)
 
-    if (daysUntilDue < 0) {
-      // Past due or paid
-      paidBillsCount++;
-      paidBillsAmount += amount;
-    } else if (daysUntilDue <= 7) {
-      // Due within 7 days
-      dueSoonBillsCount++;
-      dueSoonBillsAmount += amount;
-    } else {
-      // Further out
-      upcomingBillsCount++;
-      upcomingBillsAmount += amount;
+        // Calculate days until next occurrence this week
+        // Negative means the day already passed this week
+        const daysUntilWeeklyDue = billDayOfWeek - todayDayOfWeek;
+
+        if (daysUntilWeeklyDue < 0) {
+          // The day has already passed this week - PAID
+          // e.g., bill on Monday (1), today is Tuesday (2): 1 - 2 = -1
+          paidBillsCount++;
+          paidBillsAmount += amount;
+        } else if (daysUntilWeeklyDue === 0) {
+          // Due today - count as DUE SOON
+          dueSoonBillsCount++;
+          dueSoonBillsAmount += amount;
+        } else if (daysUntilWeeklyDue <= 2) {
+          // Due within 2 days - DUE SOON
+          dueSoonBillsCount++;
+          dueSoonBillsAmount += amount;
+        } else {
+          // More than 2 days away - UPCOMING
+          upcomingBillsCount++;
+          upcomingBillsAmount += amount;
+        }
+        break;
+
+      case "monthly":
+        const billDayOfMonth = billDate.getDate(); // 1-31
+
+        // Calculate days until due this month
+        const daysUntilMonthlyDue = billDayOfMonth - todayDate;
+
+        if (daysUntilMonthlyDue < 0) {
+          // The date has already passed this month - PAID
+          // e.g., bill on 10th, today is 11th: 10 - 11 = -1
+          paidBillsCount++;
+          paidBillsAmount += amount;
+        } else if (daysUntilMonthlyDue === 0) {
+          // Due today - count as DUE SOON
+          dueSoonBillsCount++;
+          dueSoonBillsAmount += amount;
+        } else if (daysUntilMonthlyDue <= 5) {
+          // Due within 5 days - DUE SOON
+          dueSoonBillsCount++;
+          dueSoonBillsAmount += amount;
+        } else {
+          // More than 5 days away - UPCOMING
+          upcomingBillsCount++;
+          upcomingBillsAmount += amount;
+        }
+        break;
+
+      case "yearly":
+        // Create this year's occurrence date
+        const thisYearBillDate = new Date(
+          today.getFullYear(),
+          billDate.getMonth(),
+          billDate.getDate()
+        );
+
+        // Calculate days until due
+        const timeDiff = thisYearBillDate.getTime() - today.getTime();
+        const daysUntilYearlyDue = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+        if (daysUntilYearlyDue < 0) {
+          // Already passed this year - PAID
+          paidBillsCount++;
+          paidBillsAmount += amount;
+        } else if (daysUntilYearlyDue === 0) {
+          // Due today - DUE SOON
+          dueSoonBillsCount++;
+          dueSoonBillsAmount += amount;
+        } else if (daysUntilYearlyDue <= 7) {
+          // Due within 7 days - DUE SOON
+          dueSoonBillsCount++;
+          dueSoonBillsAmount += amount;
+        } else {
+          // More than 7 days away - UPCOMING
+          upcomingBillsCount++;
+          upcomingBillsAmount += amount;
+        }
+        break;
+
+      default:
+        // Default to monthly behavior
+        const defaultBillDay = billDate.getDate();
+        const defaultDaysUntil = defaultBillDay - todayDate;
+
+        if (defaultDaysUntil < 0) {
+          paidBillsCount++;
+          paidBillsAmount += amount;
+        } else if (defaultDaysUntil <= 5) {
+          dueSoonBillsCount++;
+          dueSoonBillsAmount += amount;
+        } else {
+          upcomingBillsCount++;
+          upcomingBillsAmount += amount;
+        }
     }
   });
 
@@ -170,62 +264,4 @@ export function calculateSummaryMetrics(bills) {
     dueSoonBillsCount,
     dueSoonBillsAmount,
   };
-}
-
-// Helper function to get next due date based on interval
-function getNextDueDate(originalDate, interval, today) {
-  const nextDate = new Date(originalDate);
-
-  switch (interval) {
-    case "daily":
-      // Next occurrence is today or tomorrow
-      if (nextDate <= today) {
-        nextDate.setFullYear(today.getFullYear());
-        nextDate.setMonth(today.getMonth());
-        nextDate.setDate(today.getDate());
-      }
-      break;
-
-    case "weekly":
-      // Find the next occurrence of the same day of week
-      const targetDay = originalDate.getDay();
-      const todayDay = today.getDay();
-      let daysToAdd = targetDay - todayDay;
-      if (daysToAdd <= 0) {
-        daysToAdd += 7;
-      }
-      nextDate.setFullYear(today.getFullYear());
-      nextDate.setMonth(today.getMonth());
-      nextDate.setDate(today.getDate() + daysToAdd);
-      break;
-
-    case "monthly":
-      // Set to this month's occurrence
-      nextDate.setFullYear(today.getFullYear());
-      nextDate.setMonth(today.getMonth());
-      // If already passed this month, use next month
-      if (nextDate < today) {
-        nextDate.setMonth(nextDate.getMonth() + 1);
-      }
-      break;
-
-    case "yearly":
-      // Set to this year's occurrence
-      nextDate.setFullYear(today.getFullYear());
-      // If already passed this year, use next year
-      if (nextDate < today) {
-        nextDate.setFullYear(nextDate.getFullYear() + 1);
-      }
-      break;
-
-    default:
-      // Default to monthly behavior
-      nextDate.setFullYear(today.getFullYear());
-      nextDate.setMonth(today.getMonth());
-      if (nextDate < today) {
-        nextDate.setMonth(nextDate.getMonth() + 1);
-      }
-  }
-
-  return nextDate;
 }
