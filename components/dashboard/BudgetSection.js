@@ -36,7 +36,7 @@ export default function BudgetSection({
 
   return (
     <div className="flex flex-col text-foreground bg-background shadow-xl bg-brand-gradient border border-text/10 p-6 gap-5 rounded-2xl">
-      <SectionHeader title="Budget" linkHref="/budget" />
+      <SectionHeader title="Budget" linkHref="/budgets" />
 
       {hasNoBudgets ? (
         <div className="flex items-center justify-center py-10 text-text/50">

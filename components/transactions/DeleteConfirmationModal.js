@@ -48,15 +48,15 @@ function DeleteConfirmationModal({
           {/* Header */}
           <div className="flex items-center justify-between p-5 border-b border-text/10">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-full bg-red-100 dark:bg-red-900/30">
-                <FiAlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400" />
+              <div className="p-2 rounded-full bg-red-100 ">
+                <FiAlertTriangle className="w-5 h-5 text-red-600 " />
               </div>
               <h2 className="text-foreground text-lg font-bold">{title}</h2>
             </div>
             <button
               onClick={handleClose}
               disabled={isLoading}
-              className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
+              className="rounded-full p-2 hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
               aria-label="Close"
             >
               <FiX className="text-lg" />
@@ -68,8 +68,8 @@ function DeleteConfirmationModal({
             <p className="text-text/80 text-sm leading-relaxed">{message}</p>
 
             {itemName && (
-              <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-                <p className="text-sm font-medium text-red-800 dark:text-red-300 truncate">
+              <div className="mt-4 p-3 bg-red-200 rounded-lg border border-red-200 ">
+                <p className="text-sm font-medium text-red-800  truncate">
                   "{itemName}"
                 </p>
               </div>
@@ -82,7 +82,7 @@ function DeleteConfirmationModal({
               type="button"
               onClick={handleClose}
               disabled={isLoading}
-              className="flex-1 px-4 py-2.5 rounded-lg border border-text/20 hover:border-text/40 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium text-sm disabled:opacity-50"
+              className="flex-1 px-4 py-2.5 rounded-lg border border-text/20 hover:border-text/40 hover:bg-foreground hover:text-background transition-colors font-medium text-sm disabled:opacity-50"
             >
               Cancel
             </button>

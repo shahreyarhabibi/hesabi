@@ -173,7 +173,7 @@ export default function AddPotModal({
               <button
                 onClick={handleClose}
                 disabled={isLoading}
-                className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
+                className="rounded-full p-2 hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
               >
                 <FiX className="text-lg" />
               </button>
@@ -200,14 +200,14 @@ export default function AddPotModal({
                   type="button"
                   onClick={handleClose}
                   disabled={isLoading}
-                  className="flex-1 px-4 py-2.5 rounded-lg border border-text/20 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium disabled:opacity-50"
+                  className="flex-1 px-4 py-2.5 rounded-lg border border-text/20 hover:bg-foreground hover:text-background transition-colors font-medium disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="flex-1 px-4 py-2.5 rounded-lg bg-foreground hover:bg-primary/20 hover:text-foreground text-background font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2.5 rounded-lg bg-foreground hover:bg-background hover:text-foreground border border-text/20 text-background font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
                     <>

@@ -16,7 +16,7 @@ export default function BudgetCardDropdown({
           e.stopPropagation();
           onToggle(budgetId);
         }}
-        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="p-2 rounded-lg hover:bg-foreground hover:text-background transition-colors"
         aria-label="Budget options"
       >
         <BiDotsHorizontalRounded className="text-3xl" />
@@ -29,7 +29,7 @@ export default function BudgetCardDropdown({
               e.stopPropagation();
               onEdit();
             }}
-            className="w-full px-4 py-3 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
+            className="w-full px-4 py-3 text-left text-sm hover:bg-gray-800/10 transition-colors flex items-center gap-2"
           >
             <svg
               className="w-4 h-4"

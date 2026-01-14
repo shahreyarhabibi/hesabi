@@ -8,7 +8,7 @@ function BillRow({ bill }) {
   const categoryColor = bill.category_color || "#6B7280";
 
   return (
-    <div className="flex w-full border-b border-text/20 py-4 items-center hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+    <div className="flex w-full border-b border-text/20 py-4 items-center hover:bg-gray-400/5 transition-colors duration-150">
       <div className="flex-1 flex items-center gap-4">
         {/* Category Icon with colored background */}
         <div
