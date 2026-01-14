@@ -32,7 +32,7 @@ export default async function DashboardPage() {
       <div className="flex flex-col md:flex-row w-full gap-5 mt-10">
         <StatCard
           title="Current Balance"
-          value={formatCurrency(summary.currentBalance, currency)}
+          value={formatCurrency(Math.max(0, summary.currentBalance), currency)}
           variant="default"
         />
         <StatCard

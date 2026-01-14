@@ -1,17 +1,47 @@
 // components/auth/AuthFormClient.jsx
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import AuthFormLayout from "./AuthFormLayout";
 import PasswordInput from "./PasswordInput";
 
 export function LoginFormClient() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // Added error state
-  const [loading, setLoading] = useState(false); // Added loading state
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Check for OAuth errors or registration success
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    const registered = searchParams.get("registered");
+
+    if (errorParam) {
+      switch (errorParam) {
+        case "OAuthAccountNotLinked":
+          setError(
+            "This email is already registered. Please sign in with your original method."
+          );
+          break;
+        case "OAuthSignin":
+        case "OAuthCallback":
+          setError("Error during sign in. Please try again.");
+          break;
+        case "CredentialsSignin":
+          setError("Invalid email or password.");
+          break;
+        default:
+          setError("An error occurred. Please try again.");
+      }
+    }
+
+    if (registered === "true") {
+      // You could show a success message here
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,22 +49,28 @@ export function LoginFormClient() {
     setLoading(true);
 
     try {
-      // In NextAuth v4, you need to import signIn dynamically
       const { signIn } = await import("next-auth/react");
 
       const result = await signIn("credentials", {
-        redirect: false, // Don't redirect automatically, handle it manually
+        redirect: false,
         email,
         password,
       });
 
       if (result?.error) {
-        setError("Invalid email or password");
+        // Handle specific error messages from authorize function
+        if (
+          result.error.includes("OAuth") ||
+          result.error.includes("provider")
+        ) {
+          setError(result.error);
+        } else {
+          setError("Invalid email or password");
+        }
         setLoading(false);
       } else {
-        // Redirect to dashboard on successful login
         router.push("/dashboard");
-        router.refresh(); // Refresh to update session
+        router.refresh();
       }
     } catch (error) {
       console.error("Login error:", error);
