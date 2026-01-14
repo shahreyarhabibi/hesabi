@@ -13,6 +13,11 @@
   --brand-gradient: linear-gradient(0deg, #f8fafc, #f8fafc);
   --input-background: #f8fafc;
   --table-header: f9fafb;
+
+  --color-income-bg: #d1fae5;
+  --color-income-text: #065f46;
+  --color-expense-bg: #fee2e2;
+  --color-expense-text: #991b1b;
 }
 
 /* Dark mode - via .dark class (manual toggle) */
@@ -27,6 +32,11 @@
   --brand-gradient: linear-gradient(45deg, #0e121b, RGB(53, 114, 239, 0.2));
   --input-background: #101828;
   --table-header: RGB(16, 24, 40, 0.5);
+
+  --color-income-bg: rgba(6, 95, 70, 0.3);
+  --color-income-text: #34d399;
+  --color-expense-bg: rgba(153, 27, 27, 0.3);
+  --color-expense-text: #f87171;
 }
 
 /* Dark mode - via system preference (auto mode) */
@@ -42,6 +52,11 @@
     --brand-gradient: linear-gradient(45deg, #0e121b, RGB(53, 114, 239, 0.2));
     --input-background: #101828;
     --table-header: RGB(16, 24, 40, 0.5);
+
+    --color-income-bg: rgba(6, 95, 70, 0.3);
+    --color-income-text: #34d399;
+    --color-expense-bg: rgba(153, 27, 27, 0.3);
+    --color-expense-text: #f87171;
   }
 }
 
