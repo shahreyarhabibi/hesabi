@@ -28,7 +28,7 @@ const InputField = memo(function InputField({
         placeholder={placeholder}
         required={required}
         disabled={disabled}
-        className="w-full rounded-xl border border-text/20 bg-background dark:bg-gray-900 px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full rounded-xl border border-text/20 bg-input-background px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
       />
     </div>
   );

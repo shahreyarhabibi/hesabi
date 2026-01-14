@@ -23,7 +23,7 @@ const AvatarSelector = memo(function AvatarSelector({
             className={`p-1 rounded-lg transition-all duration-200 ${
               selectedAvatar === avatarPath
                 ? "ring-2 ring-primary bg-primary/10"
-                : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                : "hover:bg-gray-600/15"
             }`}
             aria-label={`Select avatar ${index + 1}`}
           >

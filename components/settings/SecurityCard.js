@@ -9,7 +9,7 @@ const SecurityCard = memo(function SecurityCard({
   onPasswordChange,
 }) {
   return (
-    <div className="bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 rounded-2xl p-6">
+    <div className="shadow-xl bg-brand-gradient border border-text/10 rounded-2xl p-6">
       <h2 className="text-xl font-bold mb-6">Security Settings</h2>
 
       <div className="space-y-6">

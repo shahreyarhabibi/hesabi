@@ -20,7 +20,7 @@ const CurrencySelector = memo(function CurrencySelector({
             className={`p-3 rounded-xl border transition-all duration-200 text-center ${
               selectedCurrency === currency.code
                 ? "border-primary bg-primary/5 ring-1 ring-primary"
-                : "border-text/10 hover:border-primary/50 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                : "border-text/10 hover:border-primary/50 hover:bg-gray-600/5"
             }`}
             aria-label={`Select ${currency.name}`}
           >
