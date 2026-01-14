@@ -18,7 +18,7 @@ export default function BudgetSummaryCard({
   }));
 
   return (
-    <div className="flex flex-col  h-160 items-center md:w-2/5 text-foreground bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-6 rounded-2xl">
+    <div className="flex flex-col  h-160 items-center md:w-2/5 text-foreground bg-brand-gradient shadow-xl  border border-text/10 p-6 rounded-2xl">
       <BudgetChart
         data={chartData}
         totalSpent={totalSpent}

@@ -22,7 +22,7 @@ function PotCard({
   const colorHex = getColorHex(pot.color);
 
   return (
-    <div className="bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-5 md:p-8 rounded-2xl">
+    <div className="shadow-xl bg-brand-gradient border border-text/10 p-5 md:p-8 rounded-2xl">
       {/* Pot Header */}
       <div className="flex justify-between w-full">
         <div className="flex items-center gap-3">

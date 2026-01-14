@@ -26,7 +26,7 @@ function BudgetCard({
   const categoryName = budget.category_name || budget.name;
 
   return (
-    <div className="flex flex-col md:min-h-150 md:max-h-180 gap-5 bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-5 md:p-10 rounded-2xl">
+    <div className="flex flex-col md:min-h-150 md:max-h-180 gap-5 shadow-xl bg-brand-gradient border border-text/10 p-5 md:p-10 rounded-2xl">
       <div className="flex items-center w-full justify-between">
         <div className="flex items-center gap-3">
           <div

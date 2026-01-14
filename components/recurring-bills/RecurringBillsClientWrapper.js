@@ -51,7 +51,7 @@ export default function RecurringBillsClientWrapper({ recurringBills }) {
         </div>
 
         {/* Right Side - Bills List */}
-        <div className="flex flex-col gap-10 w-full text-foreground bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-6 rounded-2xl">
+        <div className="flex flex-col gap-10 w-full text-foreground shadow-xl bg-brand-gradient border border-text/10 p-6 rounded-2xl">
           <BillsSearchSort
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}

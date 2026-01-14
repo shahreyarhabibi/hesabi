@@ -2,7 +2,7 @@ import { formatAmount } from "@/utils/recurringBillsUtils";
 
 export default function BillsSummaryCard({ summaryMetrics }) {
   return (
-    <div className="flex flex-col gap-5 w-full text-foreground bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-6 rounded-2xl">
+    <div className="flex flex-col gap-5 w-full text-foreground shadow-xl bg-brand-gradient border border-text/10 p-6 rounded-2xl">
       <h2 className="font-bold text-xl">Summary</h2>
 
       <div className="flex justify-between pb-3 border-b border-text/20">
