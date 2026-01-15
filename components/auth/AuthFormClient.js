@@ -134,9 +134,12 @@ export function LoginFormClient() {
   );
 }
 
+// In components/auth/AuthFormClient.jsx
+
 export function SignUpFormClient() {
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -172,8 +175,13 @@ export function SignUpFormClient() {
       return;
     }
 
-    if (!formData.name.trim()) {
-      setError("Please enter your name");
+    if (!formData.firstName.trim()) {
+      setError("Please enter your first name");
+      return;
+    }
+
+    if (!formData.lastName.trim()) {
+      setError("Please enter your last name");
       return;
     }
 
@@ -186,7 +194,8 @@ export function SignUpFormClient() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: formData.name,
+          name: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
           email: formData.email,
           password: formData.password,
         }),
@@ -219,22 +228,42 @@ export function SignUpFormClient() {
       onSubmit={handleSubmit}
       disabled={loading}
     >
-      <div className="flex flex-col gap-2">
-        <label htmlFor="name" className="font-semibold">
-          Full Name
-        </label>
-        <input
-          id="name"
-          name="name"
-          type="text"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Enter your Full Name"
-          className="md:w-100 w-85 rounded-sm border border-gray-300 p-2 focus:outline-primary/70"
-          required
-          disabled={loading}
-        />
+      {/* First Name and Last Name Row */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col gap-2 flex-1">
+          <label htmlFor="firstName" className="font-semibold">
+            First Name
+          </label>
+          <input
+            id="firstName"
+            name="firstName"
+            type="text"
+            value={formData.firstName}
+            onChange={handleChange}
+            placeholder="Enter your First Name"
+            className="w-full rounded-sm border border-gray-300 p-2 focus:outline-primary/70"
+            required
+            disabled={loading}
+          />
+        </div>
+        <div className="flex flex-col gap-2 flex-1">
+          <label htmlFor="lastName" className="font-semibold">
+            Last Name
+          </label>
+          <input
+            id="lastName"
+            name="lastName"
+            type="text"
+            value={formData.lastName}
+            onChange={handleChange}
+            placeholder="Enter your Last Name"
+            className="w-full rounded-sm border border-gray-300 p-2 focus:outline-primary/70"
+            required
+            disabled={loading}
+          />
+        </div>
       </div>
+
       <div className="flex flex-col gap-2">
         <label htmlFor="email" className="font-semibold">
           Email
@@ -246,11 +275,12 @@ export function SignUpFormClient() {
           value={formData.email}
           onChange={handleChange}
           placeholder="Enter your Email"
-          className="md:w-100 w-85 rounded-sm border border-gray-300 p-2 focus:outline-primary/70"
+          className="md:w-100 w-full rounded-sm border border-gray-300 p-2 focus:outline-primary/70"
           required
           disabled={loading}
         />
       </div>
+
       <PasswordInput
         id="password"
         name="password"
@@ -272,6 +302,7 @@ export function SignUpFormClient() {
         required
         disabled={loading}
       />
+
       {error && <div className="text-red-500 text-sm text-center">{error}</div>}
     </AuthFormLayout>
   );

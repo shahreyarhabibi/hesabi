@@ -1,21 +1,30 @@
-// app/api/auth/signup/route.js
-import { getDb } from "@/lib/db";
-import { DEFAULT_AVATAR } from "@/lib/constants";
-import bcrypt from "bcrypt";
+// app/api/register/route.js
 import { NextResponse } from "next/server";
+import { getDb } from "@/lib/db";
+import bcrypt from "bcrypt";
 
 export async function POST(request) {
   try {
-    const { email, password, name } = await request.json();
+    const { name, lastName, email, password } = await request.json();
 
     // Validation
-    if (!email || !password) {
+    if (!name || !email || !password) {
       return NextResponse.json(
-        { error: "Email and password are required" },
+        { error: "Name, email, and password are required" },
         { status: 400 }
       );
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: "Invalid email format" },
+        { status: 400 }
+      );
+    }
+
+    // Validate password strength
     if (password.length < 6) {
       return NextResponse.json(
         { error: "Password must be at least 6 characters" },
@@ -27,40 +36,42 @@ export async function POST(request) {
 
     // Check if user already exists
     const existingUser = db
-      .prepare("SELECT * FROM users WHERE email = ?")
+      .prepare("SELECT id FROM users WHERE email = ?")
       .get(email);
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "User with this email already exists" },
-        { status: 400 }
+        { error: "User already exists with this email" },
+        { status: 409 }
       );
     }
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert new user with default avatar
+    // Create user with last_name
     const result = db
       .prepare(
-        "INSERT INTO users (email, password, name, avatar) VALUES (?, ?, ?, ?)"
+        "INSERT INTO users (email, password, name, last_name, provider) VALUES (?, ?, ?, ?, ?)"
       )
-      .run(email, hashedPassword, name || email.split("@")[0], DEFAULT_AVATAR);
+      .run(
+        email,
+        hashedPassword,
+        name.trim(),
+        lastName?.trim() || null,
+        "credentials"
+      );
 
     return NextResponse.json(
       {
+        success: true,
         message: "User created successfully",
-        user: {
-          id: result.lastInsertRowid,
-          email,
-          name: name || email.split("@")[0],
-          avatar: DEFAULT_AVATAR,
-        },
+        userId: result.lastInsertRowid,
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Signup error:", error);
+    console.error("Registration error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

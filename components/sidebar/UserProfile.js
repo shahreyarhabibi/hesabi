@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { DEFAULT_AVATAR, isDefaultAvatar } from "@/lib/constants";
+import { DEFAULT_AVATAR } from "@/lib/constants";
 
 export default function UserProfile({
   isCollapsed,
   name = "User",
+  last_name = "asd",
   email = "user@example.com",
   avatar = DEFAULT_AVATAR,
   initials = "U",
@@ -45,7 +46,9 @@ export default function UserProfile({
         </div>
         {!isCollapsed && (
           <div className="flex-1 overflow-hidden">
-            <h3 className="font-semibold truncate">{name}</h3>
+            <h3 className="font-semibold truncate">
+              {name} {last_name}
+            </h3>
             <p className="text-text text-sm truncate">{email}</p>
           </div>
         )}

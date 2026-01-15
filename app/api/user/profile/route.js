@@ -8,60 +8,44 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    console.log("GET /api/user/profile - Session:", session);
 
     if (!session?.user?.id) {
-      console.log("GET /api/user/profile - No session or user id");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const db = getDb();
 
-    // First, let's check what columns exist in the users table
-    const tableInfo = db.prepare("PRAGMA table_info(users)").all();
-    console.log(
-      "Users table columns:",
-      tableInfo.map((col) => col.name)
-    );
-
-    // Build query based on existing columns
-    const columns = tableInfo.map((col) => col.name);
-    const hasColumn = (name) => columns.includes(name);
-
-    let selectColumns = ["id", "email", "name", "avatar"];
-    if (hasColumn("currency")) selectColumns.push("currency");
-    if (hasColumn("theme")) selectColumns.push("theme");
-    if (hasColumn("created_at")) selectColumns.push("created_at");
-
-    const query = `SELECT ${selectColumns.join(", ")} FROM users WHERE id = ?`;
-    console.log("Query:", query);
-
-    const user = db.prepare(query).get(session.user.id);
-    console.log("User found:", user);
+    // Fetch user with all relevant columns
+    const user = db
+      .prepare(
+        `SELECT 
+          id, email, name, last_name, avatar, currency, theme, created_at 
+        FROM users 
+        WHERE id = ?`
+      )
+      .get(session.user.id);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Parse name into firstName and lastName
-    const nameParts = (user.name || "").split(" ");
-    const firstName = nameParts[0] || "";
-    const lastName = nameParts.slice(1).join(" ") || "";
-
+    // Use 'name' as firstName, 'last_name' as lastName
     return NextResponse.json({
       user: {
-        ...user,
-        firstName,
-        lastName,
+        id: user.id,
+        email: user.email,
+        firstName: user.name || "",
+        lastName: user.last_name || "",
+        avatar: user.avatar || "/avatars/user.png",
         currency: user.currency || "USD",
         theme: user.theme || "light",
+        createdAt: user.created_at,
       },
     });
   } catch (error) {
     console.error("Error fetching user profile:", error);
-    console.error("Error stack:", error.stack);
     return NextResponse.json(
-      { error: "Internal server error", details: error.message },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
@@ -71,48 +55,30 @@ export async function GET() {
 export async function PATCH(request) {
   try {
     const session = await getServerSession(authOptions);
-    console.log("PATCH /api/user/profile - Session:", session);
 
     if (!session?.user?.id) {
-      console.log("PATCH /api/user/profile - No session or user id");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
-    console.log("PATCH /api/user/profile - Body:", body);
-
     const { firstName, lastName, email, avatar, currency, theme } = body;
 
     const db = getDb();
-
-    // Check what columns exist
-    const tableInfo = db.prepare("PRAGMA table_info(users)").all();
-    const columns = tableInfo.map((col) => col.name);
-    const hasColumn = (name) => columns.includes(name);
-
-    console.log("Available columns:", columns);
 
     // Build dynamic update query
     const updates = [];
     const values = [];
 
-    // Combine firstName and lastName into name
-    if (firstName !== undefined || lastName !== undefined) {
-      const currentUser = db
-        .prepare("SELECT name FROM users WHERE id = ?")
-        .get(session.user.id);
-
-      const currentNameParts = (currentUser?.name || "").split(" ");
-      const newFirstName =
-        firstName !== undefined ? firstName : currentNameParts[0] || "";
-      const newLastName =
-        lastName !== undefined
-          ? lastName
-          : currentNameParts.slice(1).join(" ") || "";
-
-      const fullName = `${newFirstName} ${newLastName}`.trim();
+    // Update firstName (stored in 'name' column)
+    if (firstName !== undefined) {
       updates.push("name = ?");
-      values.push(fullName);
+      values.push(firstName.trim());
+    }
+
+    // Update lastName (stored in 'last_name' column)
+    if (lastName !== undefined) {
+      updates.push("last_name = ?");
+      values.push(lastName.trim());
     }
 
     if (email !== undefined) {
@@ -132,22 +98,26 @@ export async function PATCH(request) {
       values.push(email);
     }
 
-    if (avatar !== undefined && hasColumn("avatar")) {
+    if (avatar !== undefined) {
       updates.push("avatar = ?");
       values.push(avatar);
     }
 
-    if (currency !== undefined && hasColumn("currency")) {
+    if (currency !== undefined) {
       updates.push("currency = ?");
       values.push(currency);
     }
 
-    if (theme !== undefined && hasColumn("theme")) {
+    if (theme !== undefined) {
       updates.push("theme = ?");
       values.push(theme);
     }
 
-    if (updates.length === 0) {
+    // Add updated_at
+    updates.push("updated_at = CURRENT_TIMESTAMP");
+
+    if (updates.length === 1) {
+      // Only updated_at, no actual changes
       return NextResponse.json(
         { error: "No fields to update" },
         { status: 400 }
@@ -157,42 +127,32 @@ export async function PATCH(request) {
     values.push(session.user.id);
 
     const query = `UPDATE users SET ${updates.join(", ")} WHERE id = ?`;
-    console.log("Update query:", query);
-    console.log("Update values:", values);
-
     db.prepare(query).run(...values);
 
-    // Fetch updated user - build query based on available columns
-    let selectColumns = ["id", "email", "name"];
-    if (hasColumn("avatar")) selectColumns.push("avatar");
-    if (hasColumn("currency")) selectColumns.push("currency");
-    if (hasColumn("theme")) selectColumns.push("theme");
-
-    const selectQuery = `SELECT ${selectColumns.join(
-      ", "
-    )} FROM users WHERE id = ?`;
-    const updatedUser = db.prepare(selectQuery).get(session.user.id);
-
-    console.log("Updated user:", updatedUser);
-
-    // Parse name into firstName and lastName for response
-    const nameParts = (updatedUser.name || "").split(" ");
+    // Fetch updated user
+    const updatedUser = db
+      .prepare(
+        `SELECT id, email, name, last_name, avatar, currency, theme 
+         FROM users WHERE id = ?`
+      )
+      .get(session.user.id);
 
     return NextResponse.json({
       message: "Profile updated successfully",
       user: {
-        ...updatedUser,
-        firstName: nameParts[0] || "",
-        lastName: nameParts.slice(1).join(" ") || "",
+        id: updatedUser.id,
+        email: updatedUser.email,
+        firstName: updatedUser.name || "",
+        lastName: updatedUser.last_name || "",
+        avatar: updatedUser.avatar || "/avatars/user.png",
         currency: updatedUser.currency || "USD",
         theme: updatedUser.theme || "light",
       },
     });
   } catch (error) {
     console.error("Error updating user profile:", error);
-    console.error("Error stack:", error.stack);
     return NextResponse.json(
-      { error: "Internal server error", details: error.message },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

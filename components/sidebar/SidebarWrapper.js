@@ -12,6 +12,7 @@ export default async function SidebarWrapper() {
   // Default user data
   let userData = {
     name: "Guest User",
+    last_name: "",
     email: "guest@example.com",
     avatar: DEFAULT_AVATAR,
     initials: "GU",
@@ -24,6 +25,7 @@ export default async function SidebarWrapper() {
     if (dbUser) {
       userData = {
         name: dbUser.name || session.user.name || "User",
+        last_name: dbUser.last_name || session.user.last_name || "User",
         email: dbUser.email || session.user.email,
         avatar: dbUser.avatar || session.user.image || DEFAULT_AVATAR,
         initials: getInitials(dbUser.name || session.user.name || "User"),

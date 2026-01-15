@@ -41,7 +41,6 @@ export const authOptions = {
           throw new Error("No user found with this email");
         }
 
-        // Check if user signed up with OAuth (no password)
         if (!user.password) {
           throw new Error(
             `This email is registered with ${user.provider}. Please sign in with ${user.provider}.`
@@ -61,6 +60,7 @@ export const authOptions = {
           id: user.id.toString(),
           email: user.email,
           name: user.name,
+          lastName: user.last_name,
           avatar: user.avatar,
         };
       },
@@ -103,18 +103,18 @@ export const authOptions = {
     },
 
     async jwt({ token, user, account }) {
-      // Initial sign in
       if (user) {
         token.id = user.id;
         token.avatar = user.avatar;
+        token.lastName = user.lastName;
       }
 
-      // For OAuth, fetch the latest user data
       if (account?.provider === "google" || account?.provider === "github") {
         const dbUser = getUserByEmail(token.email);
         if (dbUser) {
           token.id = dbUser.id.toString();
           token.avatar = dbUser.avatar;
+          token.lastName = dbUser.last_name;
         }
       }
 
@@ -125,6 +125,7 @@ export const authOptions = {
       if (token && session.user) {
         session.user.id = token.id;
         session.user.avatar = token.avatar;
+        session.user.lastName = token.lastName;
       }
       return session;
     },
