@@ -23,7 +23,7 @@ export async function POST(request, { params }) {
       );
     }
 
-    const pot = withdrawFromPot(
+    const pot = await withdrawFromPot(
       parseInt(id),
       session.user.id,
       parseFloat(amount),

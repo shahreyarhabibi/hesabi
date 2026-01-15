@@ -1,7 +1,7 @@
 // app/api/user/profile/route.js
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getDb } from "@/lib/db";
+import { queryOne, execute } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 // GET - Fetch user profile
@@ -13,17 +13,14 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const db = getDb();
-
-    // Fetch user with all relevant columns
-    const user = db
-      .prepare(
-        `SELECT 
-          id, email, name, last_name, avatar, currency, theme, created_at 
-        FROM users 
-        WHERE id = ?`
-      )
-      .get(session.user.id);
+    // Fetch user with all relevant columns (async)
+    const user = await queryOne(
+      `SELECT 
+        id, email, name, last_name, avatar, currency, theme, created_at 
+      FROM users 
+      WHERE id = ?`,
+      [session.user.id]
+    );
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -63,8 +60,6 @@ export async function PATCH(request) {
     const body = await request.json();
     const { firstName, lastName, email, avatar, currency, theme } = body;
 
-    const db = getDb();
-
     // Build dynamic update query
     const updates = [];
     const values = [];
@@ -82,10 +77,11 @@ export async function PATCH(request) {
     }
 
     if (email !== undefined) {
-      // Check if email is already taken by another user
-      const existingUser = db
-        .prepare("SELECT id FROM users WHERE email = ? AND id != ?")
-        .get(email, session.user.id);
+      // Check if email is already taken by another user (async)
+      const existingUser = await queryOne(
+        "SELECT id FROM users WHERE email = ? AND id != ?",
+        [email, session.user.id]
+      );
 
       if (existingUser) {
         return NextResponse.json(
@@ -127,15 +123,14 @@ export async function PATCH(request) {
     values.push(session.user.id);
 
     const query = `UPDATE users SET ${updates.join(", ")} WHERE id = ?`;
-    db.prepare(query).run(...values);
+    await execute(query, values);
 
-    // Fetch updated user
-    const updatedUser = db
-      .prepare(
-        `SELECT id, email, name, last_name, avatar, currency, theme 
-         FROM users WHERE id = ?`
-      )
-      .get(session.user.id);
+    // Fetch updated user (async)
+    const updatedUser = await queryOne(
+      `SELECT id, email, name, last_name, avatar, currency, theme 
+       FROM users WHERE id = ?`,
+      [session.user.id]
+    );
 
     return NextResponse.json({
       message: "Profile updated successfully",

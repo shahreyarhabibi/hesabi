@@ -1,6 +1,6 @@
 // app/api/verify-otp/route.js
 import { NextResponse } from "next/server";
-import { verifyOTP, markEmailVerified, getDb } from "@/lib/db";
+import { verifyOTP, markEmailVerified, queryOne } from "@/lib/db";
 
 export async function POST(request) {
   try {
@@ -20,8 +20,8 @@ export async function POST(request) {
       );
     }
 
-    // Verify OTP
-    const result = verifyOTP(email, otp);
+    // Verify OTP (async)
+    const result = await verifyOTP(email, otp);
 
     if (!result.valid) {
       return NextResponse.json(
@@ -32,16 +32,15 @@ export async function POST(request) {
 
     // Mark email as verified
     if (userId) {
-      markEmailVerified(userId);
+      await markEmailVerified(userId);
     } else {
-      // Find user by email and verify
-      const db = getDb();
-      const user = db
-        .prepare("SELECT id FROM users WHERE email = ?")
-        .get(email);
+      // Find user by email and verify (async)
+      const user = await queryOne("SELECT id FROM users WHERE email = ?", [
+        email,
+      ]);
 
       if (user) {
-        markEmailVerified(user.id);
+        await markEmailVerified(user.id);
       }
     }
 

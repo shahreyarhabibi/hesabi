@@ -15,7 +15,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get("type") || null;
 
-    const categories = getCategories(session.user.id, type);
+    const categories = await getCategories(session.user.id, type);
 
     return NextResponse.json({ categories });
   } catch (error) {
@@ -52,7 +52,7 @@ export async function POST(request) {
       );
     }
 
-    const id = createCategory(session.user.id, name, type, icon, color);
+    const id = await createCategory(session.user.id, name, type, icon, color);
 
     return NextResponse.json(
       { message: "Category created successfully", id },

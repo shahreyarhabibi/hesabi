@@ -33,7 +33,7 @@ export async function POST(request, { params }) {
       );
     }
 
-    const pot = addToPot(
+    const pot = await addToPot(
       parseInt(id),
       session.user.id,
       parseFloat(amount),

@@ -12,7 +12,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const summary = getDashboardSummary(session.user.id);
+    const summary = await getDashboardSummary(session.user.id);
 
     return NextResponse.json({ summary });
   } catch (error) {

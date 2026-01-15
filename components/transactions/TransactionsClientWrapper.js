@@ -193,7 +193,7 @@ export default function TransactionsClientWrapper({
         const data = await response.json();
 
         const category = categories.find(
-          (c) => c.id === newTransaction.categoryId
+          (c) => c.id === parseInt(newTransaction.categoryId)
         );
 
         const transactionToAdd = {
@@ -257,7 +257,7 @@ export default function TransactionsClientWrapper({
         }
 
         const category = categories.find(
-          (c) => c.id === updatedTransaction.categoryId
+          (c) => c.id === parseInt(updatedTransaction.categoryId)
         );
 
         setTransactions((prev) =>

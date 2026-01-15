@@ -1,7 +1,7 @@
 // app/api/user/password/route.js
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getDb } from "@/lib/db";
+import { queryOne, execute } from "@/lib/db";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 
@@ -39,12 +39,10 @@ export async function PATCH(request) {
       );
     }
 
-    const db = getDb();
-
-    // Get current user with password
-    const user = db
-      .prepare("SELECT id, password FROM users WHERE id = ?")
-      .get(session.user.id);
+    // Get current user with password (async)
+    const user = await queryOne("SELECT id, password FROM users WHERE id = ?", [
+      session.user.id,
+    ]);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -66,11 +64,11 @@ export async function PATCH(request) {
     // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 12);
 
-    // Update password
-    db.prepare("UPDATE users SET password = ? WHERE id = ?").run(
+    // Update password (async)
+    await execute("UPDATE users SET password = ? WHERE id = ?", [
       hashedPassword,
-      session.user.id
-    );
+      session.user.id,
+    ]);
 
     return NextResponse.json({
       message: "Password updated successfully",

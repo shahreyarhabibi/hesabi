@@ -19,7 +19,7 @@ export default async function RecurringBillsPage() {
   }
 
   // Fetch recurring bills from database
-  const recurringBills = getRecurringBills(session.user.id);
+  const recurringBills = await getRecurringBills(session.user.id);
 
   return (
     <DashboardLayout>

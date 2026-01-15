@@ -13,7 +13,7 @@ export async function GET(request, { params }) {
     }
 
     const { id } = await params;
-    const budget = getBudgetById(parseInt(id), session.user.id);
+    const budget = await getBudgetById(parseInt(id), session.user.id);
 
     if (!budget) {
       return NextResponse.json({ error: "Budget not found" }, { status: 404 });
@@ -40,9 +40,9 @@ export async function PATCH(request, { params }) {
     const { id } = await params;
     const body = await request.json();
 
-    const result = updateBudget(parseInt(id), session.user.id, body);
+    const result = await updateBudget(parseInt(id), session.user.id, body);
 
-    if (result.changes === 0) {
+    if (result.rowsAffected === 0) {
       return NextResponse.json(
         { error: "Budget not found or not updated" },
         { status: 404 }
@@ -68,9 +68,9 @@ export async function DELETE(request, { params }) {
     }
 
     const { id } = await params;
-    const result = deleteBudget(parseInt(id), session.user.id);
+    const result = await deleteBudget(parseInt(id), session.user.id);
 
-    if (result.changes === 0) {
+    if (result.rowsAffected === 0) {
       return NextResponse.json({ error: "Budget not found" }, { status: 404 });
     }
 

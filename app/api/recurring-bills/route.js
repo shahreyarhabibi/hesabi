@@ -17,7 +17,7 @@ export async function GET(request) {
       search: searchParams.get("search") || undefined,
     };
 
-    const bills = getRecurringBills(session.user.id, options);
+    const bills = await getRecurringBills(session.user.id, options);
 
     return NextResponse.json({ bills });
   } catch (error) {

@@ -7,7 +7,7 @@ import { DEFAULT_AVATAR } from "@/lib/constants";
 export default function UserProfile({
   isCollapsed,
   name = "User",
-  last_name = "asd",
+  last_name = "",
   email = "user@example.com",
   avatar = DEFAULT_AVATAR,
   initials = "U",

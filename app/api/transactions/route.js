@@ -17,19 +17,12 @@ export async function GET(request) {
       limit: searchParams.get("limit")
         ? parseInt(searchParams.get("limit"))
         : undefined,
-      offset: searchParams.get("offset")
-        ? parseInt(searchParams.get("offset"))
-        : undefined,
       type: searchParams.get("type") || undefined,
-      categoryId: searchParams.get("categoryId")
-        ? parseInt(searchParams.get("categoryId"))
-        : undefined,
-      startDate: searchParams.get("startDate") || undefined,
-      endDate: searchParams.get("endDate") || undefined,
       search: searchParams.get("search") || undefined,
     };
 
-    const transactions = getTransactions(session.user.id, options);
+    // Now async!
+    const transactions = await getTransactions(session.user.id, options);
 
     return NextResponse.json({ transactions });
   } catch (error) {

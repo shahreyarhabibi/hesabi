@@ -12,7 +12,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const pots = getPots(session.user.id);
+    const pots = await getPots(session.user.id);
 
     return NextResponse.json({ pots });
   } catch (error) {
@@ -42,7 +42,7 @@ export async function POST(request) {
       );
     }
 
-    const id = createPot(session.user.id, {
+    const id = await createPot(session.user.id, {
       name,
       description,
       targetAmount: parseFloat(targetAmount),

@@ -12,7 +12,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const budgets = getBudgets(session.user.id);
+    const budgets = await getBudgets(session.user.id);
 
     return NextResponse.json({ budgets });
   } catch (error) {
@@ -43,7 +43,7 @@ export async function POST(request) {
       );
     }
 
-    const id = createBudget(session.user.id, {
+    const id = await createBudget(session.user.id, {
       categoryId,
       name,
       maxAmount: parseFloat(maxAmount),

@@ -17,7 +17,7 @@ export async function GET(request, { params }) {
     }
 
     const { id } = await params;
-    const transaction = getTransactionById(parseInt(id), session.user.id);
+    const transaction = await getTransactionById(parseInt(id), session.user.id);
 
     if (!transaction) {
       return NextResponse.json(
@@ -47,9 +47,9 @@ export async function PATCH(request, { params }) {
     const { id } = await params;
     const body = await request.json();
 
-    const result = updateTransaction(parseInt(id), session.user.id, body);
+    const result = await updateTransaction(parseInt(id), session.user.id, body);
 
-    if (result.changes === 0) {
+    if (result.rowsAffected === 0) {
       return NextResponse.json(
         { error: "Transaction not found or not updated" },
         { status: 404 }
@@ -75,9 +75,9 @@ export async function DELETE(request, { params }) {
     }
 
     const { id } = await params;
-    const result = deleteTransaction(parseInt(id), session.user.id);
+    const result = await deleteTransaction(parseInt(id), session.user.id);
 
-    if (result.changes === 0) {
+    if (result.rowsAffected === 0) {
       return NextResponse.json(
         { error: "Transaction not found" },
         { status: 404 }

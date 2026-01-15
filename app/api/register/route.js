@@ -1,10 +1,12 @@
 // app/api/register/route.js
 import { NextResponse } from "next/server";
 import {
-  getDb,
+  getUserByEmail,
   createOTP,
   checkOTPRateLimit,
   incrementOTPRequestCount,
+  execute,
+  queryOne,
 } from "@/lib/db";
 import { sendOTPEmail } from "@/lib/email";
 import bcrypt from "bcrypt";
@@ -36,18 +38,17 @@ export async function POST(request) {
       );
     }
 
-    const db = getDb();
-
-    // Check if user already exists
-    const existingUser = db
-      .prepare("SELECT id, email_verified FROM users WHERE email = ?")
-      .get(email);
+    // Check if user already exists (using async function)
+    const existingUser = await queryOne(
+      "SELECT id, email_verified FROM users WHERE email = ?",
+      [email]
+    );
 
     if (existingUser) {
       // If user exists but not verified, allow re-registration
       if (existingUser.email_verified === 0) {
         // Check rate limit before sending OTP
-        const rateLimit = checkOTPRateLimit(email);
+        const rateLimit = await checkOTPRateLimit(email);
 
         if (!rateLimit.allowed) {
           const waitMessage = rateLimit.blocked
@@ -68,18 +69,19 @@ export async function POST(request) {
 
         // Update user details
         const hashedPassword = await bcrypt.hash(password, 10);
-        db.prepare(
-          "UPDATE users SET password = ?, name = ?, last_name = ? WHERE id = ?"
-        ).run(
-          hashedPassword,
-          name.trim(),
-          lastName?.trim() || null,
-          existingUser.id
+        await execute(
+          "UPDATE users SET password = ?, name = ?, last_name = ? WHERE id = ?",
+          [
+            hashedPassword,
+            name.trim(),
+            lastName?.trim() || null,
+            existingUser.id,
+          ]
         );
 
         // Generate and send OTP
-        const otp = createOTP(email);
-        incrementOTPRequestCount(email);
+        const otp = await createOTP(email);
+        await incrementOTPRequestCount(email);
 
         const emailResult = await sendOTPEmail(email, otp, name);
 
@@ -109,7 +111,7 @@ export async function POST(request) {
     }
 
     // Check rate limit before sending OTP
-    const rateLimit = checkOTPRateLimit(email);
+    const rateLimit = await checkOTPRateLimit(email);
 
     if (!rateLimit.allowed) {
       const waitMessage = rateLimit.blocked
@@ -132,24 +134,23 @@ export async function POST(request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user (unverified)
-    const result = db
-      .prepare(
-        `INSERT INTO users (email, password, name, last_name, provider, email_verified) 
-         VALUES (?, ?, ?, ?, 'credentials', 0)`
-      )
-      .run(email, hashedPassword, name.trim(), lastName?.trim() || null);
+    const result = await execute(
+      `INSERT INTO users (email, password, name, last_name, provider, email_verified) 
+       VALUES (?, ?, ?, ?, 'credentials', 0)`,
+      [email, hashedPassword, name.trim(), lastName?.trim() || null]
+    );
 
     const userId = result.lastInsertRowid;
 
     // Generate and send OTP
-    const otp = createOTP(email);
-    incrementOTPRequestCount(email);
+    const otp = await createOTP(email);
+    await incrementOTPRequestCount(email);
 
     const emailResult = await sendOTPEmail(email, otp, name);
 
     if (!emailResult.success) {
       // Delete the user if email fails
-      db.prepare("DELETE FROM users WHERE id = ?").run(userId);
+      await execute("DELETE FROM users WHERE id = ?", [userId]);
       console.error("Failed to send OTP email:", emailResult.error);
       return NextResponse.json(
         { error: "Failed to send verification email. Please try again." },

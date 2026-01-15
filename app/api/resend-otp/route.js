@@ -4,7 +4,7 @@ import {
   createOTP,
   checkOTPRateLimit,
   incrementOTPRequestCount,
-  getDb,
+  queryOne,
 } from "@/lib/db";
 import { sendOTPEmail } from "@/lib/email";
 
@@ -16,8 +16,8 @@ export async function POST(request) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
-    // Check rate limit
-    const rateLimit = checkOTPRateLimit(email);
+    // Check rate limit (async)
+    const rateLimit = await checkOTPRateLimit(email);
 
     if (!rateLimit.allowed) {
       const waitMessage = rateLimit.blocked
@@ -37,17 +37,16 @@ export async function POST(request) {
       );
     }
 
-    // Get user name for email
-    const db = getDb();
-    const user = db
-      .prepare("SELECT name FROM users WHERE email = ?")
-      .get(email);
+    // Get user name for email (async)
+    const user = await queryOne("SELECT name FROM users WHERE email = ?", [
+      email,
+    ]);
 
     const userName = user?.name || "User";
 
-    // Generate and send OTP
-    const otp = createOTP(email);
-    incrementOTPRequestCount(email);
+    // Generate and send OTP (async)
+    const otp = await createOTP(email);
+    await incrementOTPRequestCount(email);
 
     const emailResult = await sendOTPEmail(email, otp, userName);
 
