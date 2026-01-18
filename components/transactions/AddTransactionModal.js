@@ -56,7 +56,7 @@ export default function AddTransactionModal({
   const filteredCategories = useMemo(() => {
     const type = formData.type === "income" ? "income" : "expense";
     return availableCategories.filter(
-      (c) => c.type === type || c.type === "both"
+      (c) => c.type === type || c.type === "both",
     );
   }, [availableCategories, formData.type]);
 
@@ -65,7 +65,7 @@ export default function AddTransactionModal({
     if (isOpen) {
       if (editingTransaction) {
         const category = availableCategories.find(
-          (c) => c.name === editingTransaction.category
+          (c) => c.name === editingTransaction.category,
         );
 
         const date = editingTransaction.date?.includes("/")
@@ -108,7 +108,7 @@ export default function AddTransactionModal({
   useEffect(() => {
     if (formData.categoryId) {
       const currentCategory = availableCategories.find(
-        (c) => c.id.toString() === formData.categoryId
+        (c) => c.id.toString() === formData.categoryId,
       );
       const type = formData.type === "income" ? "income" : "expense";
 
@@ -522,49 +522,53 @@ function ModalFormContent({
         />
       </div>
 
-      {/* Recurring */}
-      <div className="flex items-center justify-between py-2">
-        <span className="text-sm text-foreground">Recurring</span>
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            name="recurring"
-            checked={formData.recurring}
-            onChange={handleChange}
-            disabled={isLoading}
-            className="sr-only peer"
-          />
-          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-        </label>
-      </div>
+      {formData.type === "expense" && (
+        <>
+          {/* Recurring */}
+          <div className="flex items-center justify-between py-2">
+            <span className="text-sm text-foreground">Recurring</span>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                name="recurring"
+                checked={formData.recurring}
+                onChange={handleChange}
+                disabled={isLoading}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+          </div>
 
-      {/* Recurring Interval */}
-      {formData.recurring && (
-        <div>
-          <label className="block text-xs font-medium text-foreground mb-1.5">
-            Repeat <span className="text-red-500">*</span>
-          </label>
-          <select
-            name="recurringInterval"
-            value={formData.recurringInterval}
-            onChange={handleChange}
-            disabled={isLoading}
-            className={`w-full px-3 py-2.5 rounded-lg border text-sm ${
-              errors.recurringInterval ? "border-red-500" : "border-text/20"
-            } bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50`}
-          >
-            <option value="">Select interval</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-          </select>
-          {errors.recurringInterval && (
-            <p className="mt-1 text-xs text-red-500">
-              {errors.recurringInterval}
-            </p>
+          {/* Recurring Interval */}
+          {formData.recurring && (
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1.5">
+                Repeat <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="recurringInterval"
+                value={formData.recurringInterval}
+                onChange={handleChange}
+                disabled={isLoading}
+                className={`w-full px-3 py-2.5 rounded-lg border text-sm ${
+                  errors.recurringInterval ? "border-red-500" : "border-text/20"
+                } bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50`}
+              >
+                <option value="">Select interval</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+              {errors.recurringInterval && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.recurringInterval}
+                </p>
+              )}
+            </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 // components/pots/PotsClientWrapper.jsx
 "use client";
 
+import { TbPigOff } from "react-icons/tb";
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header/Header";
@@ -80,8 +81,8 @@ export default function PotsClientWrapper({ initialPots, currency = "USD" }) {
                   saved:
                     data.pot?.saved_amount ?? pot.saved + parseFloat(amount),
                 }
-              : pot
-          )
+              : pot,
+          ),
         );
 
         setMoneyModalOpen(false);
@@ -94,7 +95,7 @@ export default function PotsClientWrapper({ initialPots, currency = "USD" }) {
         setIsLoading(false);
       }
     },
-    [router]
+    [router],
   );
 
   // Handle confirm withdraw
@@ -120,8 +121,8 @@ export default function PotsClientWrapper({ initialPots, currency = "USD" }) {
         // Update local state
         setPots((prev) =>
           prev.map((pot) =>
-            pot.id === potId ? { ...pot, saved: data.pot.saved_amount } : pot
-          )
+            pot.id === potId ? { ...pot, saved: data.pot.saved_amount } : pot,
+          ),
         );
 
         setMoneyModalOpen(false);
@@ -134,7 +135,7 @@ export default function PotsClientWrapper({ initialPots, currency = "USD" }) {
         setIsLoading(false);
       }
     },
-    [router]
+    [router],
   );
 
   const handleAddPot = useCallback(
@@ -184,7 +185,7 @@ export default function PotsClientWrapper({ initialPots, currency = "USD" }) {
         setIsLoading(false);
       }
     },
-    [router]
+    [router],
   );
 
   const handleUpdatePot = useCallback(
@@ -222,8 +223,8 @@ export default function PotsClientWrapper({ initialPots, currency = "USD" }) {
                   color: updatedPot.color,
                   progressColor: updatedPot.color,
                 }
-              : pot
-          )
+              : pot,
+          ),
         );
 
         setIsPotModalOpen(false);
@@ -236,7 +237,7 @@ export default function PotsClientWrapper({ initialPots, currency = "USD" }) {
         setIsLoading(false);
       }
     },
-    [router]
+    [router],
   );
 
   const handleDeletePot = useCallback(
@@ -265,7 +266,7 @@ export default function PotsClientWrapper({ initialPots, currency = "USD" }) {
         setIsLoading(false);
       }
     },
-    [router]
+    [router],
   );
 
   const handleEditPot = useCallback((pot) => {
@@ -314,7 +315,9 @@ export default function PotsClientWrapper({ initialPots, currency = "USD" }) {
       >
         {pots.length === 0 ? (
           <div className="col-span-full flex flex-col items-center justify-center py-20 bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 rounded-2xl">
-            <div className="text-5xl mb-4">🐷</div>
+            <div className="text-5xl mb-4">
+              <TbPigOff className="text-6xl text-text/70" />
+            </div>
             <h3 className="text-xl font-semibold text-foreground mb-2">
               No savings pots yet
             </h3>

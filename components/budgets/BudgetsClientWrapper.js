@@ -1,5 +1,6 @@
 // components/budgets/BudgetsClientWrapper.jsx
 "use client";
+import { TbMoneybag } from "react-icons/tb";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -114,7 +115,7 @@ export default function BudgetsClientWrapper({
         setIsLoading(false);
       }
     },
-    [categories, router]
+    [categories, router],
   );
 
   const handleUpdateBudget = useCallback(
@@ -141,7 +142,7 @@ export default function BudgetsClientWrapper({
 
         // Find category info
         const category = categories.find(
-          (c) => c.id === updatedBudget.categoryId
+          (c) => c.id === updatedBudget.categoryId,
         );
 
         // Update local state
@@ -157,8 +158,8 @@ export default function BudgetsClientWrapper({
                   category_name: category?.name || updatedBudget.name,
                   period: updatedBudget.period || "monthly",
                 }
-              : budget
-          )
+              : budget,
+          ),
         );
 
         setIsBudgetModalOpen(false);
@@ -171,7 +172,7 @@ export default function BudgetsClientWrapper({
         setIsLoading(false);
       }
     },
-    [categories, router]
+    [categories, router],
   );
 
   const handleDeleteBudget = useCallback(
@@ -200,7 +201,7 @@ export default function BudgetsClientWrapper({
         setIsLoading(false);
       }
     },
-    [router]
+    [router],
   );
 
   const handleEditBudget = useCallback((budget) => {
@@ -253,7 +254,9 @@ export default function BudgetsClientWrapper({
         <div className="flex flex-col w-full md:w-3/5 gap-10">
           {budgets.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 bg-background shadow-xl dark:bg-linear-45 dark:from-background dark:to-primary/20 border border-text/10 p-6 rounded-2xl">
-              <div className="text-5xl mb-4">💰</div>
+              <div className="text-5xl mb-4">
+                <TbMoneybag className="text-6xl text-text/70" />
+              </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">
                 No budgets yet
               </h3>

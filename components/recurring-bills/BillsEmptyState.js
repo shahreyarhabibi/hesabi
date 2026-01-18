@@ -5,7 +5,7 @@ import { RiBillLine } from "react-icons/ri";
 export default function BillsEmptyState({ searchTerm, onClearSearch }) {
   return (
     <div className="flex flex-col items-center h-full justify-center py-16 text-center">
-      <RiBillLine className="text-5xl text-text/30 mb-4" />
+      <RiBillLine className="text-5xl text-text/70 mb-4" />
       <h3 className="text-xl font-semibold mb-2">
         {searchTerm ? "No matching bills found" : "No recurring bills"}
       </h3>

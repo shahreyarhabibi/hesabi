@@ -1,4 +1,5 @@
 // components/transactions/TransactionsTableView.jsx
+import { MdOutlineCreditCardOff } from "react-icons/md";
 import TransactionDesktopRow from "./TransactionDesktopRow";
 import TransactionMobileRow from "./TransactionMobileRow";
 
@@ -13,23 +14,39 @@ export default function TransactionsTableView({
   isLoading = false,
 }) {
   if (transactions.length === 0) {
+    const hasFiltersApplied = !!searchTerm; // you can extend this if you have other filters
+
     return (
       <div className="text-center py-12">
-        <div className="text-5xl mb-4">📭</div>
-        <h3 className="text-xl font-semibold text-foreground mb-2">
-          No transactions found
-        </h3>
-        <p className="text-text/70">
-          {searchTerm
-            ? `No results for "${searchTerm}". Try a different search term.`
-            : "No transactions match your current filters."}
-        </p>
-        <button
-          onClick={onClearFilters}
-          className="mt-4 text-primary hover:text-primary/80 transition-colors"
-        >
-          Clear all filters
-        </button>
+        <div className="text-5xl mb-4">
+          <MdOutlineCreditCardOff className="mx-auto text-6xl text-text/70" />
+        </div>
+
+        {hasFiltersApplied ? (
+          <>
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              No transactions found
+            </h3>
+            <p className="text-text/70">
+              {`No results for "${searchTerm}". Try a different search term.`}
+            </p>
+            <button
+              onClick={onClearFilters}
+              className="mt-4 text-primary hover:text-primary/80 transition-colors"
+            >
+              Clear all filters
+            </button>
+          </>
+        ) : (
+          <>
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              No Transactions yet
+            </h3>
+            <p className="text-text/70">
+              Create your first transaction to start managing your finances.
+            </p>
+          </>
+        )}
       </div>
     );
   }
