@@ -31,7 +31,7 @@ export default function Sidebar({ userData }) {
         <UserProfile
           isCollapsed={isCollapsed}
           name={userData.name}
-          last_name={userData.last_name}
+          lastName={userData.lastName}
           email={userData.email}
           avatar={userData.avatar}
           initials={userData.initials}

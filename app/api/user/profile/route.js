@@ -13,20 +13,25 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Fetch user with all relevant columns (async)
+    // ✅ Add oauth_avatar to SELECT
     const user = await queryOne(
       `SELECT 
-        id, email, name, last_name, avatar, currency, theme, created_at 
+        id, email, name, last_name, avatar, oauth_avatar, currency, theme, created_at 
       FROM users 
       WHERE id = ?`,
-      [session.user.id]
+      [session.user.id],
     );
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Use 'name' as firstName, 'last_name' as lastName
+    // ✅ Add debug logging
+    console.log("=== DB USER DATA ===");
+    console.log("avatar:", user.avatar);
+    console.log("oauth_avatar:", user.oauth_avatar);
+    console.log("===================");
+
     return NextResponse.json({
       user: {
         id: user.id,
@@ -34,6 +39,7 @@ export async function GET() {
         firstName: user.name || "",
         lastName: user.last_name || "",
         avatar: user.avatar || "/avatars/user.png",
+        oauthAvatar: user.oauth_avatar || null, // ✅ Add this
         currency: user.currency || "USD",
         theme: user.theme || "light",
         createdAt: user.created_at,
@@ -42,8 +48,8 @@ export async function GET() {
   } catch (error) {
     console.error("Error fetching user profile:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+      { error: "Internal server error", details: error.message },
+      { status: 500 },
     );
   }
 }
@@ -64,29 +70,26 @@ export async function PATCH(request) {
     const updates = [];
     const values = [];
 
-    // Update firstName (stored in 'name' column)
     if (firstName !== undefined) {
       updates.push("name = ?");
       values.push(firstName.trim());
     }
 
-    // Update lastName (stored in 'last_name' column)
     if (lastName !== undefined) {
       updates.push("last_name = ?");
       values.push(lastName.trim());
     }
 
     if (email !== undefined) {
-      // Check if email is already taken by another user (async)
       const existingUser = await queryOne(
         "SELECT id FROM users WHERE email = ? AND id != ?",
-        [email, session.user.id]
+        [email, session.user.id],
       );
 
       if (existingUser) {
         return NextResponse.json(
           { error: "Email is already in use" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -109,14 +112,12 @@ export async function PATCH(request) {
       values.push(theme);
     }
 
-    // Add updated_at
     updates.push("updated_at = CURRENT_TIMESTAMP");
 
     if (updates.length === 1) {
-      // Only updated_at, no actual changes
       return NextResponse.json(
         { error: "No fields to update" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -125,11 +126,11 @@ export async function PATCH(request) {
     const query = `UPDATE users SET ${updates.join(", ")} WHERE id = ?`;
     await execute(query, values);
 
-    // Fetch updated user (async)
+    // ✅ Add oauth_avatar to SELECT
     const updatedUser = await queryOne(
-      `SELECT id, email, name, last_name, avatar, currency, theme 
+      `SELECT id, email, name, last_name, avatar, oauth_avatar, currency, theme 
        FROM users WHERE id = ?`,
-      [session.user.id]
+      [session.user.id],
     );
 
     return NextResponse.json({
@@ -140,6 +141,7 @@ export async function PATCH(request) {
         firstName: updatedUser.name || "",
         lastName: updatedUser.last_name || "",
         avatar: updatedUser.avatar || "/avatars/user.png",
+        oauthAvatar: updatedUser.oauth_avatar || null, // ✅ Add this
         currency: updatedUser.currency || "USD",
         theme: updatedUser.theme || "light",
       },
@@ -147,8 +149,8 @@ export async function PATCH(request) {
   } catch (error) {
     console.error("Error updating user profile:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+      { error: "Internal server error", details: error.message },
+      { status: 500 },
     );
   }
 }

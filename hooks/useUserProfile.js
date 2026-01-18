@@ -10,6 +10,7 @@ export function useUserProfile() {
     lastName: "",
     email: "",
     avatar: DEFAULT_AVATAR,
+    oauthAvatar: null, // Add this for OAuth avatar
     currency: "USD",
     theme: "light",
   });
@@ -29,7 +30,7 @@ export function useUserProfile() {
 
       if (!response.ok) {
         throw new Error(
-          data.error || data.details || "Failed to fetch profile"
+          data.error || data.details || "Failed to fetch profile",
         );
       }
 
@@ -38,6 +39,7 @@ export function useUserProfile() {
         lastName: data.user.lastName || "",
         email: data.user.email || "",
         avatar: data.user.avatar || DEFAULT_AVATAR,
+        oauthAvatar: data.user.oauthAvatar || null, // Add this
         currency: data.user.currency || "USD",
         theme: data.user.theme || "light",
       });
@@ -67,7 +69,7 @@ export function useUserProfile() {
 
       if (!response.ok) {
         throw new Error(
-          data.error || data.details || "Failed to update profile"
+          data.error || data.details || "Failed to update profile",
         );
       }
 
@@ -77,6 +79,7 @@ export function useUserProfile() {
         lastName: data.user.lastName || prev.lastName,
         email: data.user.email || prev.email,
         avatar: data.user.avatar || prev.avatar,
+        oauthAvatar: data.user.oauthAvatar || prev.oauthAvatar, // Add this (preserve existing)
         currency: data.user.currency || prev.currency,
         theme: data.user.theme || prev.theme,
       }));
@@ -106,7 +109,7 @@ export function useUserProfile() {
 
       if (!response.ok) {
         throw new Error(
-          data.error || data.details || "Failed to update password"
+          data.error || data.details || "Failed to update password",
         );
       }
 

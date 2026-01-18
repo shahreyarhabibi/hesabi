@@ -12,7 +12,7 @@ export default async function SidebarWrapper() {
   // Default user data
   let userData = {
     name: "Guest User",
-    last_name: "",
+    lastName: "",
     email: "guest@example.com",
     avatar: DEFAULT_AVATAR,
     initials: "GU",
@@ -20,12 +20,12 @@ export default async function SidebarWrapper() {
 
   // If user is logged in, fetch their data
   if (session?.user?.email) {
-    const dbUser = getUserById(session.user.id);
+    const dbUser = await getUserById(session.user.id);
 
     if (dbUser) {
       userData = {
         name: dbUser.name || session.user.name || "User",
-        last_name: dbUser.last_name || session.user.last_name || "",
+        lastName: dbUser.lastName || session.user.lastName || "",
         email: dbUser.email || session.user.email,
         avatar: dbUser.avatar || session.user.image || DEFAULT_AVATAR,
         initials: getInitials(dbUser.name || session.user.name || "User"),

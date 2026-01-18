@@ -1,7 +1,7 @@
 // components/settings/SettingsContent.jsx
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import MessageAlert from "./MessageAlert";
 import ProfileCard from "./ProfileCard";
@@ -14,7 +14,10 @@ import { AVATAR_OPTIONS, CURRENCY_OPTIONS } from "@/lib/constants";
 import { useUserProfile } from "@/hooks/useUserProfile";
 
 export default function SettingsContent() {
+  // ===== 1. ROUTER =====
   const router = useRouter();
+
+  // ===== 2. CUSTOM HOOKS (this defines userProfile) =====
   const {
     userProfile,
     setUserProfile,
@@ -24,12 +27,26 @@ export default function SettingsContent() {
     updatePassword,
   } = useUserProfile();
 
+  // ===== 3. useState HOOKS =====
   const [passwordData, setPasswordData] = useState(DEFAULT_PASSWORD_DATA);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [hasChanges, setHasChanges] = useState(false);
   const [originalProfile, setOriginalProfile] = useState(null);
 
+  // ===== 4. useMemo HOOKS (AFTER useUserProfile, uses userProfile) =====
+  const dynamicAvatarOptions = useMemo(() => {
+    const options = [...AVATAR_OPTIONS];
+
+    // If user has an OAuth avatar, add it to the beginning of options
+    if (userProfile.oauthAvatar && !options.includes(userProfile.oauthAvatar)) {
+      options.unshift(userProfile.oauthAvatar);
+    }
+
+    return options;
+  }, [userProfile.oauthAvatar]);
+
+  // ===== 5. useEffect HOOKS =====
   // Track original profile for change detection
   useEffect(() => {
     if (!isLoading && userProfile.email) {
@@ -48,7 +65,7 @@ export default function SettingsContent() {
         });
       }
     }
-  }, [message]); // This runs every time the message state changes
+  }, [message]);
 
   // Detect changes
   useEffect(() => {
@@ -69,12 +86,13 @@ export default function SettingsContent() {
     setHasChanges(profileChanged || !!passwordChanged);
   }, [userProfile, passwordData, originalProfile]);
 
+  // ===== 6. useCallback HOOKS =====
   const handleProfileChange = useCallback(
     (e) => {
       const { name, value } = e.target;
       setUserProfile((prev) => ({ ...prev, [name]: value }));
     },
-    [setUserProfile]
+    [setUserProfile],
   );
 
   const handlePasswordChange = useCallback((e) => {
@@ -86,14 +104,14 @@ export default function SettingsContent() {
     (avatarPath) => {
       setUserProfile((prev) => ({ ...prev, avatar: avatarPath }));
     },
-    [setUserProfile]
+    [setUserProfile],
   );
 
   const handleCurrencySelect = useCallback(
     (currencyCode) => {
       setUserProfile((prev) => ({ ...prev, currency: currencyCode }));
     },
-    [setUserProfile]
+    [setUserProfile],
   );
 
   const clearMessage = useCallback(() => {
@@ -113,7 +131,6 @@ export default function SettingsContent() {
     setMessage({ type: "", text: "" });
 
     try {
-      // Validate password if trying to change it
       const isChangingPassword =
         passwordData.currentPassword ||
         passwordData.newPassword ||
@@ -151,7 +168,6 @@ export default function SettingsContent() {
         }
       }
 
-      // Validate email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(userProfile.email)) {
         setMessage({
@@ -162,7 +178,6 @@ export default function SettingsContent() {
         return;
       }
 
-      // Validate name
       if (!userProfile.firstName.trim()) {
         setMessage({ type: "error", text: "First name is required" });
         setIsSaving(false);
@@ -171,7 +186,6 @@ export default function SettingsContent() {
 
       let hasError = false;
 
-      // Update profile
       const profileResult = await updateProfile({
         firstName: userProfile.firstName,
         lastName: userProfile.lastName,
@@ -185,7 +199,6 @@ export default function SettingsContent() {
         hasError = true;
       }
 
-      // Update password if changing
       if (!hasError && isChangingPassword) {
         const passwordResult = await updatePassword({
           currentPassword: passwordData.currentPassword,
@@ -202,15 +215,10 @@ export default function SettingsContent() {
       if (!hasError) {
         setMessage({ type: "success", text: "Settings saved successfully!" });
         setPasswordData(DEFAULT_PASSWORD_DATA);
-        setOriginalProfile({
-          ...userProfile,
-        });
+        setOriginalProfile({ ...userProfile });
         setHasChanges(false);
-
-        // Refresh the page to update sidebar and other components
         router.refresh();
 
-        // Clear success message after 3 seconds
         setTimeout(() => {
           setMessage({ type: "", text: "" });
         }, 3000);
@@ -222,6 +230,7 @@ export default function SettingsContent() {
     }
   }, [passwordData, userProfile, updateProfile, updatePassword, router]);
 
+  // ===== 7. CONDITIONAL RETURNS (AFTER all hooks) =====
   if (isLoading) {
     return <SettingsSkeleton />;
   }
@@ -242,6 +251,7 @@ export default function SettingsContent() {
     );
   }
 
+  // ===== 8. RENDER =====
   return (
     <>
       <MessageAlert message={message} onClose={clearMessage} />
@@ -250,7 +260,7 @@ export default function SettingsContent() {
         <div className="space-y-8">
           <ProfileCard
             userProfile={userProfile}
-            avatarOptions={AVATAR_OPTIONS}
+            avatarOptions={dynamicAvatarOptions}
             onProfileChange={handleProfileChange}
             onAvatarSelect={handleAvatarSelect}
           />

@@ -7,7 +7,7 @@ import { DEFAULT_AVATAR } from "@/lib/constants";
 export default function UserProfile({
   isCollapsed,
   name = "User",
-  last_name = "",
+  lastName = "",
   email = "user@example.com",
   avatar = DEFAULT_AVATAR,
   initials = "U",
@@ -47,7 +47,7 @@ export default function UserProfile({
         {!isCollapsed && (
           <div className="flex-1 overflow-hidden">
             <h3 className="font-semibold truncate">
-              {name} {last_name}
+              {name} {lastName}
             </h3>
             <p className="text-text text-sm truncate">{email}</p>
           </div>
