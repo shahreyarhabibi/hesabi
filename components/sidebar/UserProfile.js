@@ -1,3 +1,4 @@
+// components/sidebar/UserProfile.jsx
 "use client";
 
 import Image from "next/image";
@@ -14,44 +15,55 @@ export default function UserProfile({
 }) {
   const [imageError, setImageError] = useState(false);
 
-  // Always show avatar image (default or custom)
-  // Only show initials if image fails to load
   const showAvatar = avatar && !imageError;
 
   return (
-    <div className="p-6 border-b border-gray-700">
-      <div
-        className={`flex items-center ${
-          isCollapsed ? "justify-center" : "space-x-3"
-        }`}
-      >
-        <div className="relative">
+    <div className="p-5 border-b border-white/10">
+      <div className="flex items-center">
+        {/* Avatar Container */}
+        <div
+          className={`relative flex-shrink-0 transition-all duration-300 ease-in-out ${
+            isCollapsed ? "mx-auto" : "mr-4"
+          }`}
+        >
+          {/* Glow Effect */}
+          <div className="absolute inset-0 bg-primary/30 rounded-full blur-md -z-10" />
+
           {showAvatar ? (
             <Image
               src={avatar}
               alt={`${name}'s avatar`}
-              width={45}
-              height={45}
-              className="rounded-full ring-2 ring-primary/30"
+              width={48}
+              height={48}
+              className="rounded-full ring-2 ring-white/20 ring-offset-2 ring-offset-[#0E121A] transition-all duration-300"
               onError={() => setImageError(true)}
-              unoptimized={avatar.startsWith("http")} // For external URLs
+              unoptimized={avatar.startsWith("http")}
             />
           ) : (
-            // Fallback to initials only if image fails to load
-            <div className="w-11.25 h-11.25 bg-primary rounded-full flex items-center justify-center text-lg font-bold ring-2 ring-primary/30">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center text-lg font-bold ring-2 ring-white/20 ring-offset-2 ring-offset-[#0E121A]">
               {initials}
             </div>
           )}
-          <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-800"></div>
-        </div>
-        {!isCollapsed && (
-          <div className="flex-1 overflow-hidden">
-            <h3 className="font-semibold truncate">
-              {name} {lastName}
-            </h3>
-            <p className="text-text text-sm truncate">{email}</p>
+
+          {/* Online Status */}
+          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-[3px] border-[#0E121A] shadow-lg shadow-emerald-500/50">
+            <div className="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-75" />
           </div>
-        )}
+        </div>
+
+        {/* User Info */}
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            isCollapsed ? "w-0 opacity-0" : "w-auto opacity-100 flex-1"
+          }`}
+        >
+          <h3 className="font-semibold text-white truncate whitespace-nowrap">
+            {name} {lastName}
+          </h3>
+          <p className="text-white/50 text-sm truncate whitespace-nowrap">
+            {email}
+          </p>
+        </div>
       </div>
     </div>
   );

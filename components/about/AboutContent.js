@@ -21,7 +21,7 @@ import {
   Layout,
 } from "lucide-react";
 
-const APP_INFO = {
+export const APP_INFO = {
   name: "Hesabi",
   version: "1.0.0",
   tagline: "Know Where Your Money Goes",

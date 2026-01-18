@@ -1,14 +1,21 @@
+// components/sidebar/MobileNav.jsx
 "use client";
 
 import Link from "next/link";
 
 export default function MobileNav({ items, currentPath, onItemClick }) {
-  // Take only first 5 items for mobile nav
   const mobileItems = items.slice(0, 5);
 
   return (
-    <nav className="md:hidden rounded-tr-4xl rounded-tl-4xl fixed bottom-0 left-0 right-0 bg-[#0E121A] border-t border-gray-700 z-50 safe-area-bottom">
-      <div className="flex items-center justify-around px-2 py-3">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50">
+      {/* Blur background */}
+      <div className="absolute inset-0 bg-[#0a0d14]/90 backdrop-blur-xl" />
+
+      {/* Top glow line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+
+      {/* Navigation Items */}
+      <div className="relative flex items-center justify-around px-4 py-3 safe-area-bottom">
         {mobileItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentPath === item.href;
@@ -18,20 +25,35 @@ export default function MobileNav({ items, currentPath, onItemClick }) {
               key={item.name}
               href={item.href}
               onClick={() => onItemClick(item.name)}
-              className="flex flex-col items-center gap-1 min-w-0 flex-1"
+              className="flex flex-col items-center gap-1.5 min-w-0 flex-1 group"
             >
-              <div
-                className={`p-2.5 rounded-xl transition-all duration-200 ${
-                  isActive
-                    ? "bg-primary text-white"
-                    : "text-white/70 hover:text-white active:text-white"
-                }`}
-              >
-                <Icon className="text-xl" />
+              {/* Icon Container */}
+              <div className="relative">
+                {/* Active glow */}
+                {isActive && (
+                  <div className="absolute inset-0 bg-primary/40 rounded-xl blur-lg" />
+                )}
+
+                <div
+                  className={`relative p-2.5 rounded-xl transition-all duration-300 ${
+                    isActive
+                      ? "bg-gradient-to-br from-primary to-primary/80 text-white shadow-lg shadow-primary/30 scale-110"
+                      : "text-white/50 group-active:scale-95 group-hover:text-white group-hover:bg-white/10"
+                  }`}
+                >
+                  <Icon className="text-xl" />
+                </div>
+
+                {/* Active dot indicator */}
+                {isActive && (
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full" />
+                )}
               </div>
+
+              {/* Label - Always visible on mobile for better UX */}
               <span
-                className={`hidden text-xs truncate max-w-full px-1 ${
-                  isActive ? "text-white font-medium" : "text-white/60"
+                className={`text-[10px] font-medium truncate max-w-full transition-colors ${
+                  isActive ? "text-white" : "text-white/40"
                 }`}
               >
                 {item.label}

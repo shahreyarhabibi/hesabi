@@ -1,3 +1,4 @@
+// components/sidebar/NavSection.jsx
 import NavItem from "./NavItem";
 
 export default function NavSection({
@@ -7,7 +8,7 @@ export default function NavSection({
   onItemClick,
 }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-1">
       {items.map((item) => {
         const isActive = currentPath === item.href;
 

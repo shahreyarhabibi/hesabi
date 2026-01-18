@@ -26,7 +26,9 @@ export default function BudgetSummaryCard({
         currency={currency}
       />
       <div className="flex flex-col mt-10 self-start w-full">
-        <h2 className="text-2xl font-bold">Spending Summary</h2>
+        <h2 className="text-2xl font-bold md:text-left text-center">
+          Spending Summary
+        </h2>
         {budgets.length === 0 ? (
           <p className="text-text/70 mt-5 text-center">No budgets to display</p>
         ) : (
