@@ -10,8 +10,8 @@ export default function SidebarHeader({ isCollapsed, onToggle }) {
         }`}
       >
         {/* Logo */}
-        <div className="relative flex-shrink-0">
-          <div className="w-11 h-11 bg-gradient-to-br from-primary to-primary/70 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25">
+        <div className="relative shrink-0">
+          <div className="w-11 h-11 bg-linear-to-br from-primary to-primary/70 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25">
             <span className="text-xl font-bold text-white">H</span>
           </div>
           <div className="absolute inset-0 bg-primary/20 rounded-xl blur-xl -z-10" />
@@ -31,7 +31,7 @@ export default function SidebarHeader({ isCollapsed, onToggle }) {
       {/* Toggle Button */}
       <button
         onClick={onToggle}
-        className={`p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-300 group flex-shrink-0 ${
+        className={`p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all duration-300 group shrink-0 ${
           isCollapsed ? "mx-auto" : ""
         }`}
         aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}

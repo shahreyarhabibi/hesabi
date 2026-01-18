@@ -10,7 +10,7 @@ export default function NavItem({ item, isActive, isCollapsed, onClick }) {
       onClick={onClick}
       className={`relative flex items-center rounded-xl p-3 transition-all duration-300 ease-in-out group ${
         isActive
-          ? "bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg shadow-primary/25"
+          ? "bg-linear-to-r from-primary to-primary/80 text-white shadow-lg shadow-primary/25"
           : "hover:bg-white/5 text-white/50 hover:text-white"
       } ${isCollapsed ? "justify-center" : ""}`}
     >
@@ -25,7 +25,7 @@ export default function NavItem({ item, isActive, isCollapsed, onClick }) {
 
       {/* Icon container */}
       <div
-        className={`flex items-center justify-center flex-shrink-0 transition-transform duration-300 ${
+        className={`flex items-center justify-center shrink-0 transition-transform duration-300 ${
           isActive ? "" : "group-hover:scale-110"
         }`}
       >

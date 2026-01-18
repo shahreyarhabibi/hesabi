@@ -192,7 +192,7 @@ export default function TermsContent() {
                 <ul className="space-y-2 ml-4">
                   {sub.items.map((item, itemIndex) => (
                     <li key={itemIndex} className="flex items-start gap-2">
-                      <XCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                      <XCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
                       <span>{item}</span>
                     </li>
                   ))}

@@ -12,7 +12,7 @@ export default function MobileNav({ items, currentPath, onItemClick }) {
       <div className="absolute inset-0 bg-[#0a0d14]/90 backdrop-blur-xl" />
 
       {/* Top glow line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent" />
 
       {/* Navigation Items */}
       <div className="relative flex items-center justify-around px-4 py-3 safe-area-bottom">
@@ -37,7 +37,7 @@ export default function MobileNav({ items, currentPath, onItemClick }) {
                 <div
                   className={`relative p-2.5 rounded-xl transition-all duration-300 ${
                     isActive
-                      ? "bg-gradient-to-br from-primary to-primary/80 text-white shadow-lg shadow-primary/30 scale-110"
+                      ? "bg-linear-to-br from-primary to-primary/80 text-white shadow-lg shadow-primary/30 scale-110"
                       : "text-white/50 group-active:scale-95 group-hover:text-white group-hover:bg-white/10"
                   }`}
                 >
