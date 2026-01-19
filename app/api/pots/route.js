@@ -19,7 +19,7 @@ export async function GET() {
     console.error("Error fetching pots:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -38,7 +38,7 @@ export async function POST(request) {
     if (!name || !targetAmount) {
       return NextResponse.json(
         { error: "Name and target amount are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -53,13 +53,13 @@ export async function POST(request) {
 
     return NextResponse.json(
       { message: "Pot created successfully", id },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Error creating pot:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

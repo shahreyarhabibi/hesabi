@@ -5,7 +5,7 @@ import { BiDownArrowAlt, BiUpArrowAlt } from "react-icons/bi";
 import { memo, useState } from "react";
 import CategoryIcon from "../dashboard/CategoryIcon";
 import { formatCurrency, formatDate } from "@/lib/constants";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 
 function TransactionDesktopRow({
   transaction,
@@ -122,7 +122,7 @@ function TransactionDesktopRow({
       <td className="hidden sm:table-cell py-4 px-6">
         <div
           className={`font-semibold text-md ${getAmountColor(
-            transaction.amount
+            transaction.amount,
           )}`}
         >
           {formatAmount(transaction.amount)}

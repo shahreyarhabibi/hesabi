@@ -1,7 +1,7 @@
 // app/api/pots/[id]/deposit/route.js
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { addToPot } from "@/lib/db";
+import { getPotById, addToPot } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function POST(request, { params }) {
@@ -13,51 +13,41 @@ export async function POST(request, { params }) {
     }
 
     const { id } = await params;
-
-    let body;
-    try {
-      body = await request.json();
-    } catch (e) {
-      return NextResponse.json(
-        { error: "Invalid request body" },
-        { status: 400 }
-      );
-    }
-
+    const body = await request.json();
     const { amount, note } = body;
 
+    // Validate amount
     if (!amount || amount <= 0) {
       return NextResponse.json(
         { error: "Amount must be greater than 0" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const pot = await addToPot(
-      parseInt(id),
-      session.user.id,
-      parseFloat(amount),
-      note || null
-    );
+    // Check if pot exists
+    const existingPot = await getPotById(parseInt(id), session.user.id);
 
-    if (!pot) {
+    if (!existingPot) {
       return NextResponse.json({ error: "Pot not found" }, { status: 404 });
     }
 
+    // Add money to pot
+    const updatedPot = await addToPot(
+      parseInt(id),
+      session.user.id,
+      parseFloat(amount),
+      note || null,
+    );
+
     return NextResponse.json({
-      message: "Deposit successful",
-      pot: {
-        id: pot.id,
-        name: pot.name,
-        saved_amount: pot.saved_amount,
-        target_amount: pot.target_amount,
-      },
+      message: "Money added successfully",
+      pot: updatedPot,
     });
   } catch (error) {
-    console.error("Error depositing to pot:", error);
+    console.error("Error adding money to pot:", error);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
 }

@@ -1,7 +1,7 @@
 // app/api/pots/[id]/withdraw/route.js
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { withdrawFromPot } from "@/lib/db";
+import { getPotById, withdrawFromPot } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function POST(request, { params }) {
@@ -16,29 +16,56 @@ export async function POST(request, { params }) {
     const body = await request.json();
     const { amount, note } = body;
 
+    // Validate amount
     if (!amount || amount <= 0) {
       return NextResponse.json(
         { error: "Amount must be greater than 0" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const pot = await withdrawFromPot(
+    // Check if pot exists
+    const existingPot = await getPotById(parseInt(id), session.user.id);
+
+    if (!existingPot) {
+      return NextResponse.json({ error: "Pot not found" }, { status: 404 });
+    }
+
+    // Check if there's enough balance
+    if (existingPot.saved_amount < parseFloat(amount)) {
+      return NextResponse.json(
+        {
+          error: "Insufficient balance",
+          available: existingPot.saved_amount,
+          requested: parseFloat(amount),
+        },
+        { status: 400 },
+      );
+    }
+
+    // Withdraw money from pot
+    const updatedPot = await withdrawFromPot(
       parseInt(id),
       session.user.id,
       parseFloat(amount),
-      note
+      note || null,
     );
 
     return NextResponse.json({
-      message: "Withdrawal successful",
-      pot,
+      message: "Money withdrawn successfully",
+      pot: updatedPot,
     });
   } catch (error) {
     console.error("Error withdrawing from pot:", error);
+
+    // Handle insufficient balance error from db function
+    if (error.message === "Insufficient balance in pot") {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
 }

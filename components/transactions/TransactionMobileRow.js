@@ -6,7 +6,7 @@ import { FiMoreVertical } from "react-icons/fi";
 import CategoryIcon from "../dashboard/CategoryIcon";
 import { formatCurrency, formatDate } from "@/lib/constants";
 import { BiDownArrowAlt, BiUpArrowAlt } from "react-icons/bi";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 
 function TransactionMobileRow({
   transaction,
@@ -97,7 +97,7 @@ function TransactionMobileRow({
       <td className="py-3 pl-6 md:hidden">
         <div
           className={`font-semibold text-sm ${getAmountColor(
-            transaction.amount
+            transaction.amount,
           )}`}
         >
           {formatAmount(transaction.amount)}

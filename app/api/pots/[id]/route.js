@@ -1,13 +1,10 @@
-// app/api/transactions/[id]/route.js
+// app/api/pots/[id]/route.js
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import {
-  getTransactionById,
-  updateTransaction,
-  deleteTransaction,
-} from "@/lib/db";
+import { getPotById, updatePot, deletePot } from "@/lib/db";
 import { NextResponse } from "next/server";
 
+// GET single pot by ID
 export async function GET(request, { params }) {
   try {
     const session = await getServerSession(authOptions);
@@ -17,25 +14,23 @@ export async function GET(request, { params }) {
     }
 
     const { id } = await params;
-    const transaction = getTransactionById(parseInt(id), session.user.id);
+    const pot = await getPotById(parseInt(id), session.user.id);
 
-    if (!transaction) {
-      return NextResponse.json(
-        { error: "Transaction not found" },
-        { status: 404 }
-      );
+    if (!pot) {
+      return NextResponse.json({ error: "Pot not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ transaction });
+    return NextResponse.json({ pot });
   } catch (error) {
-    console.error("Error fetching transaction:", error);
+    console.error("Error fetching pot:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
+// UPDATE pot
 export async function PATCH(request, { params }) {
   try {
     const session = await getServerSession(authOptions);
@@ -47,25 +42,65 @@ export async function PATCH(request, { params }) {
     const { id } = await params;
     const body = await request.json();
 
-    const result = updateTransaction(parseInt(id), session.user.id, body);
-
-    if (result.changes === 0) {
+    // Validate required fields
+    if (body.name !== undefined && !body.name.trim()) {
       return NextResponse.json(
-        { error: "Transaction not found or not updated" },
-        { status: 404 }
+        { error: "Pot name is required" },
+        { status: 400 },
       );
     }
 
-    return NextResponse.json({ message: "Transaction updated successfully" });
+    if (body.targetAmount !== undefined && body.targetAmount <= 0) {
+      return NextResponse.json(
+        { error: "Target amount must be greater than 0" },
+        { status: 400 },
+      );
+    }
+
+    // Check if pot exists
+    const existingPot = await getPotById(parseInt(id), session.user.id);
+
+    if (!existingPot) {
+      return NextResponse.json({ error: "Pot not found" }, { status: 404 });
+    }
+
+    // Convert undefined to null for database compatibility
+    const updateData = {
+      name: body.name ?? null,
+      description: body.description ?? null,
+      targetAmount: body.targetAmount ?? null,
+      color: body.color ?? null,
+      icon: body.icon ?? null,
+      deadline: body.deadline ?? null,
+    };
+
+    // Update the pot
+    const updated = await updatePot(parseInt(id), session.user.id, updateData);
+
+    if (!updated) {
+      return NextResponse.json(
+        { error: "Failed to update pot" },
+        { status: 500 },
+      );
+    }
+
+    // Get updated pot
+    const updatedPot = await getPotById(parseInt(id), session.user.id);
+
+    return NextResponse.json({
+      message: "Pot updated successfully",
+      pot: updatedPot,
+    });
   } catch (error) {
-    console.error("Error updating transaction:", error);
+    console.error("Error updating pot:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
+// DELETE pot
 export async function DELETE(request, { params }) {
   try {
     const session = await getServerSession(authOptions);
@@ -75,21 +110,29 @@ export async function DELETE(request, { params }) {
     }
 
     const { id } = await params;
-    const result = deleteTransaction(parseInt(id), session.user.id);
 
-    if (result.changes === 0) {
+    // Check if pot exists
+    const existingPot = await getPotById(parseInt(id), session.user.id);
+
+    if (!existingPot) {
+      return NextResponse.json({ error: "Pot not found" }, { status: 404 });
+    }
+
+    const deleted = await deletePot(parseInt(id), session.user.id);
+
+    if (!deleted) {
       return NextResponse.json(
-        { error: "Transaction not found" },
-        { status: 404 }
+        { error: "Failed to delete pot" },
+        { status: 500 },
       );
     }
 
-    return NextResponse.json({ message: "Transaction deleted successfully" });
+    return NextResponse.json({ message: "Pot deleted successfully" });
   } catch (error) {
-    console.error("Error deleting transaction:", error);
+    console.error("Error deleting pot:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

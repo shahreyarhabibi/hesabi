@@ -26,6 +26,7 @@ export default function BudgetsClientWrapper({
   const [editingBudget, setEditingBudget] = useState(null);
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [deletingBudgetId, setDeletingBudgetId] = useState(null);
 
   // Update state when props change
   useEffect(() => {
@@ -177,10 +178,7 @@ export default function BudgetsClientWrapper({
 
   const handleDeleteBudget = useCallback(
     async (budgetId) => {
-      if (!confirm("Are you sure you want to delete this budget?")) {
-        return;
-      }
-
+      setDeletingBudgetId(budgetId); // ✅ Set deleting state
       setIsLoading(true);
       try {
         const response = await fetch(`/api/budgets/${budgetId}`, {
@@ -188,7 +186,8 @@ export default function BudgetsClientWrapper({
         });
 
         if (!response.ok) {
-          throw new Error("Failed to delete budget");
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to delete budget");
         }
 
         setBudgets((prev) => prev.filter((budget) => budget.id !== budgetId));
@@ -196,9 +195,10 @@ export default function BudgetsClientWrapper({
         router.refresh();
       } catch (error) {
         console.error("Error deleting budget:", error);
-        alert("Failed to delete budget. Please try again.");
+        alert(error.message || "Failed to delete budget. Please try again.");
       } finally {
         setIsLoading(false);
+        setDeletingBudgetId(null); // ✅ Clear deleting state
       }
     },
     [router],
@@ -282,6 +282,7 @@ export default function BudgetsClientWrapper({
                 onDropdownToggle={handleDropdownToggle}
                 onEdit={handleEditBudget}
                 onDelete={handleDeleteBudget}
+                isDeleting={deletingBudgetId === budget.id}
               />
             ))
           )}
