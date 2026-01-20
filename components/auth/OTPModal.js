@@ -150,7 +150,7 @@ export default function OTPModal({
         setResendError(`Please wait ${errorData.waitTime} seconds.`);
       } else {
         setResendError(
-          err.message || "Failed to resend OTP. Please try again."
+          err.message || "Failed to resend OTP. Please try again.",
         );
       }
     } finally {
@@ -208,7 +208,7 @@ export default function OTPModal({
             {/* Blocked Warning */}
             {isBlocked && (
               <div className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl mb-6">
-                <FiAlertCircle className="text-red-500 flex-shrink-0" />
+                <FiAlertCircle className="text-red-500 shrink-0" />
                 <div>
                   <p className="text-sm font-medium text-red-700 dark:text-red-400">
                     Too many attempts
