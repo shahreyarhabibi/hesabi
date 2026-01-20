@@ -68,8 +68,8 @@ export default async function DashboardPage() {
           <BudgetSection budgets={summary.budgetOverview} currency={currency} />
           <RecurringBillsSection
             bills={summary.recurringBills}
-            billsSummary={summary.billsSummary}
-            currency={currency}
+            billsSummary={summary.billsSummary} // ✅ Pass the calculated summary
+            currency={user.currency}
           />
         </div>
       </div>
