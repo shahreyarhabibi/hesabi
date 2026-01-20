@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Professional GitHub README
+Markdown
 
-## Getting Started
+<div align="center">
+  <img src="public/logo.png" alt="Hesabi Logo" width="80" height="80" />
+  
+  # Hesabi
+  
+  **Know Where Your Money Goes**
+  
+  A modern personal finance management app to track expenses, manage budgets, and achieve savings goals.
+  
+  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+  [![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
+  
+  [Live Demo](https://hesabi.vercel.app) • [Documentation](https://hesabi.vercel.app/docs) • [Report Bug](https://github.com/shahreyarhabibi/hesabi/issues)
 
-First, run the development server:
+  <img src="public/screenshots/dashboard.png" alt="Dashboard Preview" width="700" />
+</div>
 
-```bash
+---
+
+## Features
+
+- 📊 **Dashboard** — Real-time financial overview with interactive charts
+- 💳 **Transactions** — Track income and expenses with categories
+- 📈 **Budgets** — Set spending limits and monitor progress
+- 🐷 **Savings Pots** — Create goals and track savings
+- 🔐 **Secure Auth** — Email, Google, and GitHub authentication
+- 🌙 **Dark Mode** — Beautiful light and dark themes
+- 💱 **Multi-Currency** — Support for USD, EUR, GBP, AFN, and more
+
+---
+
+## Tech Stack
+
+**Frontend:** Next.js 15, React, Tailwind CSS, Recharts, Framer Motion  
+**Backend:** Next.js API Routes, NextAuth.js  
+**Database:** Turso (Edge SQLite)  
+**Email:** MailerSend
+
+---
+
+## Quick Start
+
+````bash
+# Clone the repository
+git clone https://github.com/shahreyarhabibi/hesabi.git
+cd hesabi
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your credentials
+
+# Run database migrations
+npm run migrate:turso
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Open http://localhost:3000 in your browser.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Environment Variables
+Create a .env.local file with the following:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+env
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key
+TURSO_DATABASE_URL=your-turso-url
+TURSO_AUTH_TOKEN=your-turso-token
+GOOGLE_CLIENT_ID=your-google-id
+GOOGLE_CLIENT_SECRET=your-google-secret
+GITHUB_CLIENT_ID=your-github-id
+GITHUB_CLIENT_SECRET=your-github-secret
+MAILERSEND_API_KEY=your-mailersend-key
+See .env.example for all options.
 
-## Learn More
+Author
+Ali Reza Habibi — Software Engineer
 
-To learn more about Next.js, take a look at the following resources:
+GitHub
+LinkedIn
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+License
+This project is licensed under the MIT License.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<div align="center"> <sub>Built with ❤️ using Next.js and Tailwind CSS</sub> </div> ```
+````
