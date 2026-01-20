@@ -178,13 +178,13 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the **GNU Affero General Public License v3.0** - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 <div align="center">
   
-Made with ❤️ by [Ali Reza Habibi](https://github.com/ahmadrezasharifi)
+Made with ❤️ by [Ali Reza Habibi](https://github.com/shahreyarhabibi)
 
 ⭐ Star this repository if you find it helpful!
 

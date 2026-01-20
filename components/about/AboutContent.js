@@ -172,7 +172,7 @@ export default function AboutContent() {
       <div className="bg-brand-gradient border border-text/10 rounded-2xl p-8 text-center">
         <Image
           className="mx-auto mb-2"
-          alt="Hesaby Logo"
+          alt="Heasbi Logo"
           width={200}
           height={50}
           src={logoSrc}

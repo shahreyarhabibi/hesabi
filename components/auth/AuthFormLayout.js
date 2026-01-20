@@ -88,7 +88,7 @@ export default function AuthFormLayout({
           <div className="flex flex-col md:items-start items-center gap-2">
             <Image
               className="mb-5"
-              alt="Hesaby Logo"
+              alt="Heasbi Logo"
               width={200}
               height={50}
               src={logoSrc}
