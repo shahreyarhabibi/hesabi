@@ -88,7 +88,7 @@ export default function AuthFormLayout({
   const isDisabled = disabled || oauthLoading !== null;
 
   return (
-    <section className="flex bg-[#2A5BC0] md:bg-[#6D99F2]">
+    <section className="flex bg-[#2A5BC0] md:bg-[#7596D8]">
       <div className="flex w-full min-h-screen items-center bg-background justify-center md:rounded-bl-[5vw] md:rounded-tr-none rounded-bl-[20vw] rounded-tr-[20vw]">
         <div className="flex w-3/4 min-h-screen flex-col items-center justify-center gap-5">
           <div className="flex flex-col md:items-start items-center gap-2">
