@@ -97,7 +97,7 @@ export default function AuthFormLayout({
             <h2 className="md:block hidden text-3xl font-bold text-foreground">
               {title}
             </h2>
-            <p className="text-text">{subtitle}</p>
+            <p className="text-text text-center">{subtitle}</p>
 
             <form
               onSubmit={onSubmit}

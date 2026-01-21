@@ -435,7 +435,7 @@ export function LoginFormClient() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your Email"
-          className="md:min-w-100 w-85 rounded-sm border border-gray-300 p-2 focus:outline-primary/70"
+          className="md:min-w-100 w-full rounded-sm border border-gray-300 p-2 focus:outline-primary/70"
           required
           disabled={loading}
         />
