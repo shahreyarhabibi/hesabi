@@ -13,7 +13,7 @@ export default function SidebarHeader({ isCollapsed, onToggle }) {
       >
         {/* Logo */}
         <div className="relative shrink-0">
-          <Image alt="Logo" width={170} height={50} src={darkLogo} />
+          <Image alt="Logo" width={140} height={50} src={darkLogo} />
 
           <div className="absolute inset-0 bg-primary/20 rounded-xl blur-xl -z-10" />
         </div>

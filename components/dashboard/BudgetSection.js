@@ -14,11 +14,11 @@ export default function BudgetSection({
   // Calculate totals for the chart
   const totalSpent = data.reduce(
     (sum, b) => sum + (b.spent || b.value || 0),
-    0
+    0,
   );
   const totalBudget = data.reduce(
     (sum, b) => sum + (b.max_amount || b.max || 0),
-    0
+    0,
   );
 
   // Prepare chart data
@@ -43,7 +43,7 @@ export default function BudgetSection({
           <p>No budgets set. Create a budget to track your spending!</p>
         </div>
       ) : (
-        <div className="flex flex-col md:flex-row items-center justify-between gap-2">
+        <div className="flex flex-col md:flex-row items-center justify-around gap-2">
           <div className="w-85.5">
             <BudgetChart
               data={chartData}

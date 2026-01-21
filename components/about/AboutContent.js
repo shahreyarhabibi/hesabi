@@ -173,7 +173,7 @@ export default function AboutContent() {
         <Image
           className="mx-auto mb-2"
           alt="Heasbi Logo"
-          width={200}
+          width={180}
           height={50}
           src={logoSrc}
           priority

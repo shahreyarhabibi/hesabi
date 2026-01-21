@@ -1,7 +1,7 @@
 // components/dashboard/StatCard.jsx
 export default function StatCard({ title, value, variant = "default" }) {
   const baseClasses =
-    "flex md:flex-1 flex-col h-35 p-5 gap-3 justify-center rounded-2xl";
+    "flex md:flex-1 flex-col h-40 p-5 gap-3 justify-center rounded-2xl";
 
   const variantClasses = {
     default: "bg-foreground",

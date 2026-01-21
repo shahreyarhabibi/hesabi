@@ -46,8 +46,8 @@ const AvatarSelector = memo(function AvatarSelector({
               <Image
                 src={avatarPath}
                 alt={isOAuth ? "Your account avatar" : `Avatar ${index + 1}`}
-                width={60}
-                height={60}
+                width={50}
+                height={50}
                 className="rounded-full"
                 // For external URLs, we need unoptimized or configure domains
                 unoptimized={isOAuth}

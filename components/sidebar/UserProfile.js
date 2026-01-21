@@ -33,8 +33,8 @@ export default function UserProfile({
             <Image
               src={avatar}
               alt={`${name}'s avatar`}
-              width={48}
-              height={48}
+              width={40}
+              height={40}
               className="rounded-full ring-2 ring-white/20 ring-offset-2 ring-offset-[#0E121A] transition-all duration-300"
               onError={() => setImageError(true)}
               unoptimized={avatar.startsWith("http")}

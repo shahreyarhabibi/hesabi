@@ -83,3 +83,9 @@ body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
 }
+
+/* app/globals.css */
+
+html {
+  font-size: 90%; /* 14px - a good middle ground */
+}
