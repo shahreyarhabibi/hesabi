@@ -32,7 +32,7 @@ export default function TransactionsClientWrapper({
   const [transactions, setTransactions] = useState(initialTransactions);
   const [isLoading, setIsLoading] = useState(false);
 
-  const itemsPerPage = 7;
+  const itemsPerPage = 8;
 
   // Update category filter when URL changes
   useEffect(() => {
@@ -87,7 +87,7 @@ export default function TransactionsClientWrapper({
 
       router.push(newUrl, { scroll: false });
     },
-    [router, searchParams]
+    [router, searchParams],
   );
 
   const handlePageChange = useCallback(
@@ -97,7 +97,7 @@ export default function TransactionsClientWrapper({
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     },
-    [totalPages]
+    [totalPages],
   );
 
   const clearFilters = useCallback(() => {
@@ -150,7 +150,7 @@ export default function TransactionsClientWrapper({
         setIsLoading(false);
       }
     },
-    [currentTransactions.length, currentPage, router]
+    [currentTransactions.length, currentPage, router],
   );
 
   const handleHideTransaction = useCallback(
@@ -160,7 +160,7 @@ export default function TransactionsClientWrapper({
         setCurrentPage(currentPage - 1);
       }
     },
-    [currentTransactions.length, currentPage]
+    [currentTransactions.length, currentPage],
   );
 
   const handleSaveNewTransaction = useCallback(
@@ -193,7 +193,7 @@ export default function TransactionsClientWrapper({
         const data = await response.json();
 
         const category = categories.find(
-          (c) => c.id === parseInt(newTransaction.categoryId)
+          (c) => c.id === parseInt(newTransaction.categoryId),
         );
 
         const transactionToAdd = {
@@ -223,7 +223,7 @@ export default function TransactionsClientWrapper({
         setIsLoading(false);
       }
     },
-    [categories, router]
+    [categories, router],
   );
 
   const handleUpdateTransaction = useCallback(
@@ -249,7 +249,7 @@ export default function TransactionsClientWrapper({
               recurring: updatedTransaction.recurring || false,
               recurringInterval: updatedTransaction.recurringInterval || null,
             }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -257,7 +257,7 @@ export default function TransactionsClientWrapper({
         }
 
         const category = categories.find(
-          (c) => c.id === parseInt(updatedTransaction.categoryId)
+          (c) => c.id === parseInt(updatedTransaction.categoryId),
         );
 
         setTransactions((prev) =>
@@ -277,8 +277,8 @@ export default function TransactionsClientWrapper({
                   category_color: category?.color || t.category_color,
                   date: updatedTransaction.date,
                 }
-              : t
-          )
+              : t,
+          ),
         );
 
         setIsAddModalOpen(false);
@@ -292,7 +292,7 @@ export default function TransactionsClientWrapper({
         setIsLoading(false);
       }
     },
-    [categories, router]
+    [categories, router],
   );
 
   return (

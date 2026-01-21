@@ -9,7 +9,7 @@ import SecurityCard from "./SecurityCard";
 import PreferencesCard from "./PreferencesCard";
 import SaveSettingsCard from "./SaveSettingsCard";
 import SettingsSkeleton from "./SettingsSkeleton";
-import { DEFAULT_PASSWORD_DATA } from "./constants";
+import { DEFAULT_PASSWORD_DATA } from "@/lib/constants";
 import { AVATAR_OPTIONS, CURRENCY_OPTIONS } from "@/lib/constants";
 import { useUserProfile } from "@/hooks/useUserProfile";
 

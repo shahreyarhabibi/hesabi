@@ -43,8 +43,8 @@ export default function BudgetSection({
           <p>No budgets set. Create a budget to track your spending!</p>
         </div>
       ) : (
-        <div className="flex flex-col md:flex-row items-center justify-between">
-          <div className="flex-1">
+        <div className="flex flex-col md:flex-row items-center justify-around gap-2">
+          <div className="w-85.5">
             <BudgetChart
               data={chartData}
               totalSpent={totalSpent}

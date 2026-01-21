@@ -10,7 +10,7 @@
  * See LICENSE file for full license text.
  */
 
-import HeroSection from "@/components/HeroSection";
+import HeroSection from "@/components/ui/HeroSection";
 import { LoginFormClient } from "@/components/auth/AuthFormClient";
 
 export const dynamic = "force-dynamic";

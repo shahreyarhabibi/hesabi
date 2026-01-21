@@ -45,7 +45,7 @@ export default function BudgetChart({
   const formattedLimit = formatCurrency(totalBudget, currency);
 
   return (
-    <div style={{ width: "100%", maxWidth: "200px", height: "200px" }}>
+    <div style={{ width: "100%", maxWidth: "280px", height: "280px" }}>
       <ResponsiveContainer>
         <PieChart>
           <Pie
@@ -70,7 +70,7 @@ export default function BudgetChart({
             <tspan
               x="50%"
               dy="-0.3em"
-              fontSize="22"
+              fontSize="30"
               fontWeight="700"
               style={{ fill: "var(--color-foreground)" }}
             >

@@ -35,8 +35,8 @@ export default async function DashboardPage() {
   return (
     <DashboardLayout>
       {/* Page Header */}
-      <div className="flex w-full items-center">
-        <h1 className="relative text-foreground text-2xl font-bold">
+      <div className="flex w-full items-center mb-6 mt-5">
+        <h1 className="relative text-foreground text-4xl font-bold">
           Overview
         </h1>
       </div>

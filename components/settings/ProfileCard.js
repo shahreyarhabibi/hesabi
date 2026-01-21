@@ -25,8 +25,8 @@ const ProfileCard = memo(function ProfileCard({
             <Image
               src={userProfile.avatar}
               alt="Profile"
-              width={100}
-              height={100}
+              width={70}
+              height={70}
               className="rounded-full border-4 border-white shadow-lg"
               priority
               unoptimized={userProfile.avatar.startsWith("http")}
