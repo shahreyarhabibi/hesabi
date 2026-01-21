@@ -45,7 +45,14 @@ export default function BudgetChart({
   const formattedLimit = formatCurrency(totalBudget, currency);
 
   return (
-    <div style={{ width: "100%", maxWidth: "280px", height: "280px" }}>
+    <div
+      style={{
+        width: "100%",
+        maxWidth: "250px",
+        height: "250px",
+        margin: "0 auto",
+      }}
+    >
       <ResponsiveContainer>
         <PieChart>
           <Pie
