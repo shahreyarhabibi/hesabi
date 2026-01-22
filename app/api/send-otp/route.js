@@ -42,7 +42,15 @@ export async function POST(request) {
 
     // Send email
     try {
-      await sendOTPEmail(normalizedEmail, otp);
+      const result = await sendOTPEmail(normalizedEmail, otp);
+
+      if (!result.success) {
+        console.error("Failed to send OTP:", result.error);
+        return NextResponse.json(
+          { error: "Failed to send OTP email" },
+          { status: 500 },
+        );
+      }
     } catch (emailError) {
       console.error("Error sending OTP email:", emailError);
       return NextResponse.json(

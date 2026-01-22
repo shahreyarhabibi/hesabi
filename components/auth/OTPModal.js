@@ -345,7 +345,7 @@ export default function OTPModal({
                 type="button"
                 onClick={onClose}
                 disabled={isLoading}
-                className="flex-1 px-4 py-3 rounded-lg border border-text/20 hover:border-text/40 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium disabled:opacity-50"
+                className="flex-1 px-4 py-3 rounded-lg border border-text/20 hover:border-text/40 hover:bg-foreground hover:text-background  transition-colors font-medium disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -386,7 +386,7 @@ export default function OTPModal({
             </div>
 
             {/* Help Text */}
-            <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+            <div className="mt-6 p-4 bg-primary/15  rounded-lg">
               <p className="text-sm text-text/70 text-center">
                 Didn't receive the code? Check your spam folder or click{" "}
                 <button
