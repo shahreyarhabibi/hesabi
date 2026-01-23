@@ -304,7 +304,7 @@ export default function TransactionsClientWrapper({
         onAdd={handleAddTransaction}
       />
 
-      <div className="rounded-xl sm:rounded-2xl border border-text/10 bg-brand-gradient p-4 sm:p-6 shadow-lg">
+      <div className="rounded-xl sm:rounded-2xl border border-text/10 bg-brand-gradient p-4 sm:p-4 shadow-lg">
         <ActiveFilters
           searchTerm={searchTerm}
           categoryFilter={categoryFilter}

@@ -57,10 +57,10 @@ export default function UserProfile({
             isCollapsed ? "w-0 opacity-0" : "w-auto opacity-100 flex-1"
           }`}
         >
-          <h3 className="font-semibold text-sm text-white truncate whitespace-nowrap">
+          <h3 className="font-semibold text-md text-white truncate whitespace-nowrap">
             {name} {lastName}
           </h3>
-          <p className="text-white/50 text-xs truncate whitespace-nowrap">
+          <p className="text-white/50 text-sm truncate whitespace-nowrap">
             {email}
           </p>
         </div>

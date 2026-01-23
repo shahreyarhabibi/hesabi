@@ -12,7 +12,7 @@ export default function TransactionsPagination({
   const pageNumbers = getPageNumbers(currentPage, totalPages);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-text/10">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-2 pt-2 ">
       <div className="hidden md:block text-sm text-text/70">
         Showing{" "}
         <span className="font-medium text-foreground">

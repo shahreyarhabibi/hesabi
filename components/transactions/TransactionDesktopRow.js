@@ -56,7 +56,7 @@ function TransactionDesktopRow({
   return (
     <>
       {/* Recipient/Sender - Hidden on mobile */}
-      <td className="hidden sm:table-cell py-4 px-6">
+      <td className="hidden sm:table-cell py-3 px-6">
         <div className="flex items-center gap-3">
           <div className="relative shrink-0">
             {/* Category icon with color background */}

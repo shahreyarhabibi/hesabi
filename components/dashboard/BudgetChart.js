@@ -57,7 +57,7 @@ export default function BudgetChart({
         <PieChart>
           <Pie
             data={chartData}
-            innerRadius="75%"
+            innerRadius="80%"
             outerRadius="100%"
             paddingAngle={5}
             dataKey="value"
