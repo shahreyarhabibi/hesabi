@@ -8,7 +8,7 @@ export default function Header({
   buttonDisplay,
 }) {
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 mt-5 sm:mb-8 md:gap-4 px-4 sm:px-6">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6  sm:mb-8 md:gap-4 px-4 sm:px-6">
       <div className="flex items-center justify-between w-full sm:w-auto sm:block">
         <div className="flex items-center w-full justify-between md:block">
           <h1 className="text-foreground text-2xl sm:text-3xl md:text-4xl font-bold">

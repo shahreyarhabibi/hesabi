@@ -130,7 +130,7 @@ export default function AuthFormLayout({
                     <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   </div>
                 ) : (
-                  <Image width={30} src={googleLogo} alt="google logo" />
+                  <Image width={25} src={googleLogo} alt="google logo" />
                 )}
               </button>
 
@@ -148,13 +148,13 @@ export default function AuthFormLayout({
                     <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   </div>
                 ) : (
-                  <Image width={35} src={githubLogo} alt="github logo" />
+                  <Image width={30} src={githubLogo} alt="github logo" />
                 )}
               </button>
             </div>
           </div>
 
-          <p className="self-center text-text relative top-15">
+          <p className="self-center text-text relative top-5">
             {footerText}
             <Link
               href={footerLink}
