@@ -15,7 +15,7 @@ export default function StatCard({ title, value, variant = "default" }) {
 
   return (
     <div className={`${baseClasses} ${variantClasses[variant]}`}>
-      <p className={`text-sm ${textColorClasses[variant]}`}>{title}</p>
+      <p className={`text-md ${textColorClasses[variant]}`}>{title}</p>
       <p className={`${textColorClasses[variant]} text-3xl font-semibold`}>
         {value}
       </p>

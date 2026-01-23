@@ -30,7 +30,7 @@ export default function NavItem({ item, isActive, isCollapsed, onClick }) {
         }`}
       >
         <Icon
-          className={`relative top-[1px] text-md transition-colors duration-300 ${
+          className={`relative top-px text-md transition-colors duration-300 ${
             isActive ? "text-white" : "text-white/50 group-hover:text-white"
           }`}
         />
@@ -42,7 +42,7 @@ export default function NavItem({ item, isActive, isCollapsed, onClick }) {
           isCollapsed ? "w-0 opacity-0 ml-0" : "w-auto opacity-100 ml-2"
         }`}
       >
-        <span className="font-medium text-xs whitespace-nowrap">
+        <span className="font-medium text-sm whitespace-nowrap">
           {item.label}
         </span>
       </div>

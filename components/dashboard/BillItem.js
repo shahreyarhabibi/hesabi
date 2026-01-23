@@ -11,9 +11,9 @@ export default function BillItem({ name, amount, color, colorHex }) {
         }`}
         style={colorStyle}
       ></div>
-      <div className="flex justify-between w-full px-5">
-        <p className="text-foreground text-sm font-semibold">{name}</p>
-        <p className="text-foreground text-sm font-semibold">{amount}</p>
+      <div className="flex justify-between items-center w-full px-5">
+        <p className="text-foreground text-sm font-medium">{name}</p>
+        <p className="text-foreground text-md font-semibold">{amount}</p>
       </div>
     </div>
   );
