@@ -29,7 +29,7 @@ export default function PotsSection({
       <div className="flex">
         <div className="flex w-full flex-col gap-5 md:flex-row justify-between">
           {/* Total Saved Card */}
-          <div className="flex  gap-3 bg-accent/10 items-center pl-3 pr-15 rounded-2xl">
+          <div className="flex  gap-3 bg-accent/10 items-center pl-3 pr-25 py-8 rounded-2xl">
             <BsPiggyBank className="text-4xl text-primary" />
             <div className="flex text-sm flex-col">
               <p>Total Saved</p>
