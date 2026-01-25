@@ -75,7 +75,7 @@ A modern, intuitive personal finance management application built with Next.js
 | **Authentication** | [NextAuth.js](https://next-auth.js.org/)        |
 | **Charts**         | [Recharts](https://recharts.org/)               |
 | **Icons**          | [Lucide React](https://lucide.dev/)             |
-| **Email**          | [MailerSend](https://www.mailersend.com/)       |
+| **Email**          | [Brevo](https://www.brevo.com/)                 |
 | **Animations**     | [Framer Motion](https://www.framer.com/motion/) |
 | **Deployment**     | [Vercel](https://vercel.com/)                   |
 
@@ -89,7 +89,7 @@ A modern, intuitive personal finance management application built with Next.js
 - npm or yarn
 - Turso account (for database)
 - Google/GitHub OAuth credentials (optional)
-- MailerSend account (for email verification)
+- Brevo account (for email verification)
 
 ### Installation
 
@@ -115,7 +115,7 @@ A modern, intuitive personal finance management application built with Next.js
  GOOGLE_CLIENT_SECRET=your-google-secret
  GITHUB_CLIENT_ID=your-github-id
  GITHUB_CLIENT_SECRET=your-github-secret
- MAILERSEND_API_KEY=your-mailersend-key
+BREVO_API_KEY=your-brevo-key
 ```
 
 4. **Run migrations:**
