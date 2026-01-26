@@ -54,7 +54,7 @@ export default function BudgetSection({
           </div>
 
           {/* Budget Categories */}
-          <div className="md:flex md:flex-col grid grid-cols-2 grid-rows-2 gap-2 justify-center">
+          <div className="md:flex md:flex-col w-full md:w-auto grid grid-cols-2 grid-rows-2 gap-2 justify-center">
             {data.map((item) => (
               <BudgetItem
                 key={item.id || item.name}

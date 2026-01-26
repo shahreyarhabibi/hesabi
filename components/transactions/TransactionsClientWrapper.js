@@ -10,6 +10,7 @@ import TransactionsPagination from "./TransactionsPagination";
 import ActiveFilters from "./ActiveFilters";
 import AddTransactionModal from "./AddTransactionModal";
 import { filterTransactions, sortTransactions } from "@/utils/transactionUtils";
+import { useResponsiveItemsPerPage } from "@/utils/hooks";
 
 export default function TransactionsClientWrapper({
   initialTransactions,
@@ -32,7 +33,7 @@ export default function TransactionsClientWrapper({
   const [transactions, setTransactions] = useState(initialTransactions);
   const [isLoading, setIsLoading] = useState(false);
 
-  const itemsPerPage = 8;
+  const itemsPerPage = useResponsiveItemsPerPage();
 
   // Update category filter when URL changes
   useEffect(() => {
