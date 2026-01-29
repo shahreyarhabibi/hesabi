@@ -36,7 +36,7 @@ export const APP_INFO = {
 const DEVELOPER = {
   name: "Ali Reza Habibi",
   title: "Software Engineer",
-  image: "/developer.jpg",
+  image: "/developer.webp",
   bio: "A passionate software engineer with over 5 years of active coding experience. I love building solutions that make people's lives easier and more organized. Hesabi was created to help individuals take control of their finances without the complexity of traditional finance tools.",
   socials: [
     {
