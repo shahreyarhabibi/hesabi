@@ -12,6 +12,8 @@ export default function OTPModal({
   email = "user@example.com",
   resendOtp,
   isLoading = false,
+  title = "Verify Your Email",
+  subtitle = "Enter the 6-digit code sent to your email",
 }) {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(60);
@@ -187,12 +189,8 @@ export default function OTPModal({
           <div className="p-6 border-b border-text/10">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-foreground text-2xl font-bold">
-                  Verify Your Email
-                </h2>
-                <p className="text-text/70 text-sm mt-1">
-                  Enter the 6-digit code sent to your email
-                </p>
+                <h2 className="text-foreground text-2xl font-bold">{title}</h2>
+                <p className="text-text/70 text-sm mt-1">{subtitle}</p>
               </div>
               <button
                 onClick={onClose}
