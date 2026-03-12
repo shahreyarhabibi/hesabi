@@ -16,7 +16,7 @@ import { LoginFormClient } from "@/components/auth/AuthFormClient";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Login | Your App Name",
+  title: "Login | Hesabi",
   description: "Log in to your account",
 };
 
